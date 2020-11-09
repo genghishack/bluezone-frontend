@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import ReactMapGl, { NavigationControl } from 'react-map-gl';
 import geoViewport from "@mapbox/geo-viewport/index";
 
-import { InfoBox } from './InfoBox/';
-import { MenuTree } from './MenuTree/';
+import InfoBox from './InfoBox/InfoBox';
+import MenuTree from './MenuTree/MenuTree';
 import CongressionalDistricts from './Layers/CongressionalDistricts';
 
 import Config from '../config';
