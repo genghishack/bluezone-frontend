@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { connect } from "react-redux";
-import { getUSStateJsonData } from '../../utility/DataHelpers';
+import { getUSStateJsonData } from '../../utils/DataHelpers';
 import { EntityItem } from '../EntityItem/';
 
 export class MenuTree extends Component {
