@@ -95,7 +95,9 @@ switch (process.env.REACT_APP_STAGE) {
     break;
 }
 
-export default {
+const configExport =  {
   MAX_ATTACHMENT_SIZE: 5000000,
   ...config
 };
+
+export default configExport;

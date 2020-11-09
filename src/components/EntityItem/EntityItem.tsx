@@ -1,32 +1,32 @@
 import React, {Component} from 'react';
-import { connect } from "react-redux";
-import { PropTypes } from "prop-types";
-import { getCongressionalDistrictJsonData } from '../../utility/DataHelpers';
+import {connect} from "react-redux";
+import {getCongressionalDistrictJsonData} from '../../utils/DataHelpers';
 import darkChevron from "../../assets/chevron.svg"
 import lightChevron from "../../assets/light_chevron.svg"
 import {setCurrentEntity, menuTreeClick} from '../../redux/actions/entities';
 
-class EntityItem extends Component {
-  static propTypes = {
-    name: PropTypes.string,
-    id: PropTypes.string,
-    type: PropTypes.string,
-    filterMap: PropTypes.func.isRequired
-  };
-  constructor(props) {
-    super(props);
-    this.handleChevronClick = this.handleChevronClick.bind(this);
-    this.entityClick = this.entityClick.bind(this);
-    this.state = {
-      children: [],
-      childrenType: null,
-      open: false
-    };
-  }
+interface IEntityItemProps {
+  name: string;
+  id: string;
+  type: string | null;
+  filterMap?: Function;
+  handleSelection: Function;
+  stateAbbr?: string;
+  currentId?: string;
+  districts?: any;
+  dispatch: Function;
+}
 
-  handleChevronClick() {
+class EntityItem extends Component<IEntityItemProps, {}> {
+  state = {
+    children: [],
+    childrenType: null,
+    open: false
+  };
+
+  handleChevronClick = () => {
     const {districts, id} = this.props;
-    this.setState({ open: !this.state.open });
+    this.setState({open: !this.state.open});
     if (this.props.type === 'states') {
       const USStateDistricts = getCongressionalDistrictJsonData(districts, id);
       console.log('USStateDistrictData: ', USStateDistricts);
@@ -37,7 +37,7 @@ class EntityItem extends Component {
     }
   }
 
-  entityClick() {
+  entityClick = () => {
     // console.log('entity clicked', this.props);
     if (this.props.type === 'states') {
       this.props.handleSelection(this.props.id);
@@ -50,7 +50,7 @@ class EntityItem extends Component {
 
   render() {
     const openClass = this.state.open ? "open" : "closed";
-    const children = this.state.children.map((entity, index) => {
+    const children = this.state.children.map((entity: any, index) => {
       return (
         <EntityItemExport
           key={`entity${index}`}

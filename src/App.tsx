@@ -14,9 +14,13 @@ import {setError} from "./redux/actions/errors";
 
 import './App.scss';
 
+type AppProps = {
+  dispatch: Function;
+}
+
 const apiConfig = Config.apiGateway;
 
-class App extends Component {
+class App extends Component<AppProps, {}> {
   state = {
     selectedState: '',
     selectedDistrict: '',
@@ -66,20 +70,7 @@ class App extends Component {
       )
   };
 
-  Map = () => (
-    <CongressMap
-      selectedState={this.state.selectedState}
-      selectedDistrict={this.state.selectedDistrict}
-      getMapHandle={this.getMapHandle}
-      handleDistrictSelection={this.handleDistrictSelection}
-    />
-  );
-
-  getMapHandle = (map) => {
-    this.map = map;
-  };
-
-  handleDistrictSelection = (stateAbbr, districtNum = '') => {
+  handleDistrictSelection = (stateAbbr: string, districtNum:string = '') => {
     this.setState({
       selectedState: stateAbbr,
       selectedDistrict: districtNum
@@ -99,6 +90,14 @@ class App extends Component {
         }
       )
   };
+
+  Map = () => (
+    <CongressMap
+      selectedState={this.state.selectedState}
+      selectedDistrict={this.state.selectedDistrict}
+      handleDistrictSelection={this.handleDistrictSelection}
+    />
+  );
 
   render = () => {
     return (

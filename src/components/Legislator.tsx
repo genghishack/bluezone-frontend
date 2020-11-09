@@ -1,7 +1,11 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 
-class Legislator extends Component {
+interface LegislatorProps {
+  data: any;
+}
+
+class Legislator extends Component<LegislatorProps, {}> {
 
   getImg = (id, fullName) => {
     const src = 'https://theunitedstates.io/images/congress/225x275/' + id + '.jpg';

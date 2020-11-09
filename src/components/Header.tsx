@@ -1,5 +1,10 @@
 import React, { Component } from 'react';
-export class Header extends Component {
+
+interface IHeaderProps {
+  handleYearSelection: Function;
+}
+
+export class Header extends Component<IHeaderProps, {}> {
   state = {
     selectedState: '',
     selectedDistrict: '',
