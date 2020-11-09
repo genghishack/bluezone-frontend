@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React, {Component, createRef} from 'react';
 import { connect } from "react-redux";
-import ReactMapGl, { NavigationControl } from 'react-map-gl';
+import ReactMapGl, {MapboxProps, NavigationControl} from 'react-map-gl';
 import geoViewport from "@mapbox/geo-viewport/index";
 import InfoBox from './InfoBox/InfoBox';
 import MenuTree from './MenuTree/MenuTree';
@@ -8,6 +8,20 @@ import CongressionalDistricts from './Layers/CongressionalDistricts';
 
 import Config from '../config';
 
+type MapProps = {
+  selectedState: string;
+  selectedDistrict: string;
+  handleDistrictSelection: Function;
+  bboxes?: any;
+  currentEntity?: string;
+  currentType?: string;
+}
+
+type MapPropsPassed = {
+  selectedState: string;
+  selectedDistrict: string;
+  handleDistrictSelection: Function;
+}
 // Use GeoViewport and the window size to determine an
 // appropriate center and zoom for the continental US
 const continentalBbox = [-128.8, 23.6, -65.4, 50.2];
@@ -18,15 +32,10 @@ const continental = continentalView(window.innerWidth / 2, window.innerHeight / 
 
 const mapConf = Config.mapbox;
 
-export class CongressMap extends Component {
-
-  constructor(props) {
-    super(props);
-
-    this.map = null;
-    this.hoveredDistrictId = null;
-  }
-
+export class CongressMap extends Component<MapProps, {}> {
+  private mapRef = createRef();
+  map = null;
+  hoveredDistrictId = null;
   state = {
     viewport: {
       longitude: continental.center[0],
@@ -49,13 +58,17 @@ export class CongressMap extends Component {
   };
 
   onMapLoad = () => {
+    // @ts-ignore
     this.map = this.mapRef.getMap();
     this.onMapFullRender();
   };
 
   onMapFullRender = () => {
+    // @ts-ignore
     const mapIsLoaded = this.map.loaded();
+    // @ts-ignore
     const styleIsLoaded = this.map.isStyleLoaded();
+    // @ts-ignore
     const tilesAreLoaded = this.map.areTilesLoaded();
     if (!mapIsLoaded || !tilesAreLoaded || !styleIsLoaded) {
       setTimeout(this.onMapFullRender, 200);
@@ -72,6 +85,7 @@ export class CongressMap extends Component {
   setHoveredDistrict(district) {
     // remove the hover setting from whatever district was being hovered before
     if (this.hoveredDistrictId) {
+      // @ts-ignore
       this.map.setFeatureState({
         source: 'districts2018',
         sourceLayer: 'districts',
@@ -85,6 +99,7 @@ export class CongressMap extends Component {
     this.hoveredDistrictId = district[0].id;
 
     // Set hover to true on the currently hovered district
+    // @ts-ignore
     this.map.setFeatureState({
       source: 'districts2018',
       sourceLayer: 'districts',
@@ -101,6 +116,7 @@ export class CongressMap extends Component {
     const { mapLoaded } = this.state;
 
     if (mapLoaded) {
+      // @ts-ignore
       const features = this.map.queryRenderedFeatures(evt.point);
 
       let cursorStyle = '';
@@ -123,12 +139,14 @@ export class CongressMap extends Component {
 
       }
 
+      // @ts-ignore
       this.map.getCanvas().style.cursor = cursorStyle;
     }
 
   };
 
   mapClick = (evt) => {
+    // @ts-ignore
     const features = this.map.queryRenderedFeatures(evt.point);
 
     // console.log('features: ', features);
@@ -194,6 +212,7 @@ export class CongressMap extends Component {
       [window.innerWidth / 2.75, window.innerHeight / 2.75]
     );
     // console.log('bbox: ', bbox, 'view: ', view);
+    // @ts-ignore
     this.map.easeTo(view);
   };
 
@@ -216,17 +235,23 @@ export class CongressMap extends Component {
     } = this.props;
 
     for (var i = 1; i <= 5; i++) {
+      // @ts-ignore
       let existingFilter = this.map.getFilter('districts_' + i);
       if (existingFilter[0] === 'all') {
         existingFilter = existingFilter[existingFilter.length - 1];
       }
       const filter = ['all'];
+      // @ts-ignore
       if (selectedState) filter.push(['==', 'state', selectedState]);
+      // @ts-ignore
       if (selectedDistrict) filter.push(['==', 'number', selectedDistrict]);
 
       const layerFilter = filter.concat([existingFilter]);
+      // @ts-ignore
       this.map.setFilter('districts_' + i, layerFilter);
+      // @ts-ignore
       this.map.setFilter('districts_' + i + '_boundary', layerFilter);
+      // @ts-ignore
       this.map.setFilter('districts_' + i + '_label', layerFilter);
     }
   };
@@ -237,20 +262,27 @@ export class CongressMap extends Component {
       selectedDistrict
     } = this.props;
 
+    // @ts-ignore
     let existingFilter = this.map.getFilter('districts_hover');
 
     if (existingFilter[0] === 'all') {
       existingFilter = existingFilter[existingFilter.length - 1];
     }
     const filter = ['all'];
+    // @ts-ignore
     if (selectedState) filter.push(['==', 'state', selectedState]);
+    // @ts-ignore
     if (selectedDistrict) filter.push(['==', 'number', selectedDistrict]);
 
     const layerFilter = filter.concat([existingFilter]);
 
+    // @ts-ignore
     this.map.setFilter('districts_hover', layerFilter);
+    // @ts-ignore
     this.map.setFilter('districts_boundary', layerFilter);
+    // @ts-ignore
     this.map.setFilter('districts_label', layerFilter);
+    // @ts-ignore
     this.map.setFilter('districts_fill', layerFilter);
   };
 
@@ -275,6 +307,7 @@ export class CongressMap extends Component {
 
         <ReactMapGl
           ref={map => {
+            // @ts-ignore
             this.mapRef = map;
           }}
           {...viewport}

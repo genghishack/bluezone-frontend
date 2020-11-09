@@ -70,7 +70,7 @@ class App extends Component<AppProps, {}> {
       )
   };
 
-  handleDistrictSelection = (stateAbbr, districtNum = '') => {
+  handleDistrictSelection = (stateAbbr: string, districtNum:string = '') => {
     this.setState({
       selectedState: stateAbbr,
       selectedDistrict: districtNum
