@@ -1,7 +1,13 @@
 import {Component} from 'react';
 import { connect } from "react-redux";
 
-export class CongressionalDistricts extends Component {
+interface ICongressionalDistrictsProps {
+  map: any;
+  mapLoaded: boolean;
+  legislatorIndex?: any;
+}
+
+export class CongressionalDistricts extends Component<ICongressionalDistrictsProps, {}> {
   componentDidMount() {
     this.onMapFullRender();
   }
@@ -17,7 +23,7 @@ export class CongressionalDistricts extends Component {
     const mapIsLoaded = map.loaded();
     const styleIsLoaded = map.isStyleLoaded();
     const tilesAreLoaded = map.areTilesLoaded();
-    if (!mapIsLoaded || !tilesAreLoaded || !styleIsLoaded & !this.props.legislatorIndex.AK) {
+    if (!mapIsLoaded || !tilesAreLoaded || !styleIsLoaded || !this.props.legislatorIndex.AK) {
       setTimeout(this.onMapFullRender, 200);
     } else {
       this.addDistrictFillLayer();
@@ -140,7 +146,9 @@ export class CongressionalDistricts extends Component {
       if(legislatorIndex && legislatorIndex[stateAbbr]) {
         districtData = legislatorIndex[stateAbbr].rep[districtNum] || {};
       }
+      // @ts-ignore
       if (districtData.name) {
+        // @ts-ignore
         const party = districtData.terms.slice(-1)[0].party;
         const partyBoolean = !!(party === 'Democrat');
         this.props.map.setFeatureState({

@@ -1,6 +1,6 @@
 import React, {Component, createRef} from 'react';
 import { connect } from "react-redux";
-import ReactMapGl, {MapboxProps, NavigationControl} from 'react-map-gl';
+import ReactMapGl, {NavigationControl} from 'react-map-gl';
 import geoViewport from "@mapbox/geo-viewport/index";
 import InfoBox from './InfoBox/InfoBox';
 import MenuTree from './MenuTree/MenuTree';
@@ -17,11 +17,6 @@ type MapProps = {
   currentType?: string;
 }
 
-type MapPropsPassed = {
-  selectedState: string;
-  selectedDistrict: string;
-  handleDistrictSelection: Function;
-}
 // Use GeoViewport and the window size to determine an
 // appropriate center and zoom for the continental US
 const continentalBbox = [-128.8, 23.6, -65.4, 50.2];
@@ -193,7 +188,8 @@ export class CongressMap extends Component<MapProps, {}> {
 
   };
 
-  closeClick = () => {
+  closeClick = (e) => {
+    e.preventDefault();
     /*
      TODO: There's a bug in this which makes whatever district
       is underneath the X become selected when the X is clicked.

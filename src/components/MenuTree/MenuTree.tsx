@@ -1,25 +1,32 @@
 import React, {Component} from 'react';
-import { connect } from "react-redux";
-import { getUSStateJsonData } from '../../utils/DataHelpers';
-import { EntityItem } from '../EntityItem/';
+import {connect} from "react-redux";
+import {getUSStateJsonData} from '../../utils/DataHelpers';
+import EntityItem from '../EntityItem/EntityItem';
 
-export class MenuTree extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      USStateOptions: [],
-    };
-  }
+interface IMenuTreeProps {
+  filterMap: Function;
+  handleSelection: Function;
+  showMenuTree?: boolean;
+  states?: any;
+}
+
+export class MenuTree extends Component<IMenuTreeProps, {}> {
+  state = {
+    USStateOptions: [],
+  };
+
   componentDidMount() {
     this.getUSStateOptions();
   }
+
   componentDidUpdate(prevProps) {
     if (prevProps.states !== this.props.states) {
       this.getUSStateOptions();
     }
   }
+
   getUSStateOptions() {
-    const { states } = this.props;
+    const {states} = this.props;
     const USStateData = getUSStateJsonData(states);
     // console.log('USStateData: ', USStateData);
     const USStates = USStateData.data.map((USState) => {
@@ -37,9 +44,9 @@ export class MenuTree extends Component {
 
   render() {
     const showMenuTreeClass = this.props.showMenuTree ? "show" : "";
-    const { filterMap, handleSelection } = this.props;
+    const {filterMap, handleSelection} = this.props;
 
-    const USStateList = this.state.USStateOptions.map((USState, index) => {
+    const USStateList = this.state.USStateOptions.map((USState: any, index) => {
       return <EntityItem
         key={`USState${index}`}
         name={USState.label}
@@ -55,7 +62,8 @@ export class MenuTree extends Component {
         <div
           className="focus-on-usa"
           onClick={() => this.props.handleSelection()}
-        >Show Entire US</div>
+        >Show Entire US
+        </div>
         <div>{USStateList}</div>
       </div>
     );

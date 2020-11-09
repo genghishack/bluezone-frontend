@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import { PropTypes } from "prop-types";
 
 import Legislator from '../Legislator';
 
@@ -8,16 +7,19 @@ import "./InfoBox.scss";
 import closeSVG from "../../assets/close_icon.png"
 import {connect} from "react-redux";
 
-class InfoBox extends Component {
+interface InfoBoxProps {
+  district: any;
+  expanded: boolean;
+  closeClick: Function;
+  legislatorIndex?: any;
+}
+
+class InfoBox extends Component<InfoBoxProps, {}> {
   constructor(props) {
     super(props);
     this.closeClick = this.closeClick.bind(this);
   }
-  static propTypes = {
-    expanded: PropTypes.bool,
-    fieldProps: PropTypes.shape({}),
-    weatherData: PropTypes.shape({})
-  };
+
   closeClick() {
     this.props.closeClick();
   }
@@ -71,7 +73,7 @@ class InfoBox extends Component {
               <section id="sen-section">
                 <div className="title">Senators</div>
                 {sens.length ?
-                  sens.map(sen => (
+                  sens.map((sen: any) => (
                       <Legislator
                         key={sen.id.bioguide}
                         data={sen}
