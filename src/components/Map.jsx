@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import { connect } from "react-redux";
 import ReactMapGl, { NavigationControl } from 'react-map-gl';
 import geoViewport from "@mapbox/geo-viewport/index";
-
 import InfoBox from './InfoBox/InfoBox';
 import MenuTree from './MenuTree/MenuTree';
 import CongressionalDistricts from './Layers/CongressionalDistricts';
@@ -277,7 +276,6 @@ export class CongressMap extends Component {
         <ReactMapGl
           ref={map => {
             this.mapRef = map;
-            this.props.getMapHandle(map);
           }}
           {...viewport}
           width="100%"

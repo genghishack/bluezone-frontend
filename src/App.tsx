@@ -70,19 +70,6 @@ class App extends Component<AppProps, {}> {
       )
   };
 
-  Map = () => (
-    <CongressMap
-      selectedState={this.state.selectedState}
-      selectedDistrict={this.state.selectedDistrict}
-      getMapHandle={this.getMapHandle}
-      handleDistrictSelection={this.handleDistrictSelection}
-    />
-  );
-
-  getMapHandle = (map) => {
-    this.map = map;
-  };
-
   handleDistrictSelection = (stateAbbr, districtNum = '') => {
     this.setState({
       selectedState: stateAbbr,
@@ -103,6 +90,14 @@ class App extends Component<AppProps, {}> {
         }
       )
   };
+
+  Map = () => (
+    <CongressMap
+      selectedState={this.state.selectedState}
+      selectedDistrict={this.state.selectedDistrict}
+      handleDistrictSelection={this.handleDistrictSelection}
+    />
+  );
 
   render = () => {
     return (
