@@ -14,9 +14,13 @@ import {setError} from "./redux/actions/errors";
 
 import './App.scss';
 
+type AppProps = {
+  dispatch: Function;
+}
+
 const apiConfig = Config.apiGateway;
 
-class App extends Component {
+class App extends Component<AppProps, {}> {
   state = {
     selectedState: '',
     selectedDistrict: '',
