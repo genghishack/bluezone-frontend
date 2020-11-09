@@ -188,8 +188,7 @@ export class CongressMap extends Component<MapProps, {}> {
 
   };
 
-  closeClick = (e) => {
-    e.preventDefault();
+  closeClick = () => {
     /*
      TODO: There's a bug in this which makes whatever district
       is underneath the X become selected when the X is clicked.
