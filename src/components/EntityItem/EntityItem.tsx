@@ -9,7 +9,6 @@ interface IEntityItemProps {
   name: string;
   id: string;
   type: string | null;
-  filterMap?: Function;
   handleSelection: Function;
   stateAbbr?: string;
   currentId?: string;

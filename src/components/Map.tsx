@@ -285,6 +285,7 @@ export class CongressMap extends Component<MapProps, {}> {
     const { handleDistrictSelection } = this.props;
     const { viewport, mapLoaded } = this.state;
 
+    console.log('mapProps: ', this.props)
     const congressionalDistricts = mapLoaded ? (
       <CongressionalDistricts
         map={this.map}
@@ -296,7 +297,6 @@ export class CongressMap extends Component<MapProps, {}> {
       <div id="main-container">
 
         <MenuTree
-          filterMap={this.filterMap}
           handleSelection={handleDistrictSelection}
         />
 
