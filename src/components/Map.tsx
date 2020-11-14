@@ -289,7 +289,6 @@ export class CongressMap extends Component<MapProps, {}> {
     const congressionalDistricts = mapLoaded ? (
       <CongressionalDistricts
         map={this.map}
-        mapLoaded={mapLoaded}
       />
     ) : null;
 

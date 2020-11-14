@@ -1,47 +1,25 @@
-import {Component} from 'react';
+import {useCallback, useEffect} from 'react';
 import { connect } from "react-redux";
 
 interface ICongressionalDistrictsProps {
   map: any;
-  mapLoaded: boolean;
   legislatorIndex?: any;
 }
 
-export class CongressionalDistricts extends Component<ICongressionalDistrictsProps, {}> {
-  componentDidMount() {
-    this.onMapFullRender();
-  }
+const CongressionalDistricts = (props: ICongressionalDistrictsProps) => {
+  const { map, legislatorIndex} = props;
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.legislatorIndex !== this.props.legislatorIndex) {
-      this.setDistrictFillByParty();
-    }
-  }
-
-  onMapFullRender = () => {
-    const {map} = this.props;
-    const mapIsLoaded = map.loaded();
-    const styleIsLoaded = map.isStyleLoaded();
-    const tilesAreLoaded = map.areTilesLoaded();
-    if (!mapIsLoaded || !tilesAreLoaded || !styleIsLoaded || !this.props.legislatorIndex.AK) {
-      setTimeout(this.onMapFullRender, 200);
-    } else {
-      this.addDistrictFillLayer();
-      this.setDistrictFillByParty();
-    }
-  };
-
-  addDistrictSource() {
-    if (!this.props.map.getSource('districts2018')) {
-      this.props.map.addSource('districts2018', {
+  const addDistrictSource = useCallback(() => {
+    if (!map.getSource('districts2018')) {
+      map.addSource('districts2018', {
         type: 'vector',
         url: 'mapbox://genghishack.cd-116-2018'
       });
     }
-  }
+  }, [map]);
 
-  addDistrictBoundariesLayer() {
-    this.props.map.addLayer({
+  const addDistrictBoundariesLayer = useCallback(() => {
+    map.addLayer({
       'id': 'districts_boundary',
       'type': 'line',
       'source': 'districts2018',
@@ -52,10 +30,10 @@ export class CongressionalDistricts extends Component<ICongressionalDistrictsPro
       },
       'filter': ['all']
     });
-  }
+  }, [map]);
 
-  addDistrictLabelsLayer() {
-    this.props.map.addLayer({
+  const addDistrictLabelsLayer = useCallback(() => {
+    map.addLayer({
       'id': 'districts_label',
       'type': 'symbol',
       'source': 'districts2018',
@@ -77,10 +55,10 @@ export class CongressionalDistricts extends Component<ICongressionalDistrictsPro
         }
       }
     });
-  }
+  }, [map]);
 
-  addDistrictHoverLayer() {
-    this.props.map.addLayer({
+  const addDistrictHoverLayer = useCallback(() => {
+    map.addLayer({
       'id': 'districts_hover',
       'type': 'fill',
       'source': 'districts2018',
@@ -104,10 +82,9 @@ export class CongressionalDistricts extends Component<ICongressionalDistrictsPro
       }
     });
 
-  }
+  }, [map]);
 
-  addDistrictFillLayer() {
-    const { map } = this.props;
+  const addDistrictFillLayer = useCallback(() => {
     map.addLayer({
       'id': 'districts_fill',
       'type': 'fill',
@@ -125,14 +102,9 @@ export class CongressionalDistricts extends Component<ICongressionalDistrictsPro
         'fill-opacity': 0.5
       }
     });
-  }
+  }, [map]);
 
-  setDistrictFillByParty() {
-    const {
-      map,
-      legislatorIndex,
-    } = this.props;
-
+  const setDistrictFillByParty = useCallback(() => {
     const features = map.querySourceFeatures('districts2018', {
       sourceLayer: 'districts',
       // filter: ['has', 'id']
@@ -151,7 +123,7 @@ export class CongressionalDistricts extends Component<ICongressionalDistrictsPro
         // @ts-ignore
         const party = districtData.terms.slice(-1)[0].party;
         const partyBoolean = !!(party === 'Democrat');
-        this.props.map.setFeatureState({
+        map.setFeatureState({
           source: 'districts2018',
           sourceLayer: 'districts',
           id: feature.id
@@ -160,15 +132,33 @@ export class CongressionalDistricts extends Component<ICongressionalDistrictsPro
         });
       }
     });
-  }
+  }, [legislatorIndex, map]);
 
-  render() {
-    this.addDistrictSource();
-    this.addDistrictBoundariesLayer();
-    this.addDistrictLabelsLayer();
-    this.addDistrictHoverLayer();
-    return null;
-  }
+  const onMapFullRender = useCallback(() => {
+    const mapIsLoaded = map.loaded();
+    const styleIsLoaded = map.isStyleLoaded();
+    const tilesAreLoaded = map.areTilesLoaded();
+    if (!mapIsLoaded || !tilesAreLoaded || !styleIsLoaded || !legislatorIndex.AK) {
+      setTimeout(onMapFullRender, 200);
+    } else {
+      addDistrictFillLayer();
+      setDistrictFillByParty();
+    }
+  }, [addDistrictFillLayer, legislatorIndex.AK, map, setDistrictFillByParty]);
+
+  useEffect(() => {
+    onMapFullRender()
+  }, [onMapFullRender]);
+
+  useEffect(() => {
+    setDistrictFillByParty();
+  }, [legislatorIndex, setDistrictFillByParty]);
+
+  addDistrictSource();
+  addDistrictBoundariesLayer();
+  addDistrictLabelsLayer();
+  addDistrictHoverLayer();
+  return null;
 }
 
 function mapStateToProps(state) {
