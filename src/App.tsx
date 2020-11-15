@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, useEffect, useLayoutEffect, useState} from 'react';
 import {connect} from "react-redux";
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
@@ -14,13 +14,104 @@ import {setError} from "./redux/actions/errors";
 
 import './App.scss';
 
-type AppProps = {
+interface IAppProps {
   dispatch: Function;
 }
 
 const apiConfig = Config.apiGateway;
 
-class App extends Component<AppProps, {}> {
+const App = (props: IAppProps) => {
+  const { dispatch } = props;
+  const [selectedState, setSelectedState] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+
+  useLayoutEffect(() => {
+    fetch(`${apiConfig.URL}/public/state/districts`)
+      .then(res => res.json())
+      .then(
+        (result) => {
+          dispatch(setDistrictsByState(result.data));
+        },
+        (error) => {
+          dispatch(setError(error));
+        }
+      );
+    fetch(`${apiConfig.URL}/public/state/bboxes`)
+      .then(res => res.json())
+      .then(
+        (result) => {
+          dispatch(setBBoxes(result.data));
+        },
+        (error) => {
+          dispatch(setError(error));
+        }
+      )
+    fetch(`${apiConfig.URL}/public/state`)
+      .then(res => res.json())
+      .then(
+        (result) => {
+          dispatch(setStates(result.data));
+        },
+        (error) => {
+          dispatch(setError(error));
+        }
+      )
+    fetch(`${apiConfig.URL}/public/legislator`)
+      .then(res => res.json())
+      .then(
+        (result) => {
+          dispatch(setLegislators(result.data));
+          dispatch(setLegislatorsByState(getLegislatorsByState(JSON.parse(JSON.stringify(result.data)))));
+        },
+        (error) => {
+          dispatch(setError(error));
+        }
+      )
+
+  }, [dispatch]);
+
+  const handleDistrictSelection = (stateAbbr: string, districtNum:string = '') => {
+    setSelectedState(stateAbbr);
+    setSelectedDistrict(districtNum);
+  };
+
+  const handleYearSelection = (year) => {
+    fetch(`${apiConfig.URL}/public/legislator?date=${year}`)
+      .then(res => res.json())
+      .then(
+        (result) => {
+          dispatch(setLegislators(result.data));
+          dispatch(setLegislatorsByState(getLegislatorsByState(JSON.parse(JSON.stringify(result.data)))));
+        },
+        (error) => {
+          dispatch(setError(error));
+        }
+      )
+  };
+
+  const Map = () => (
+    <CongressMap
+      selectedState={selectedState}
+      selectedDistrict={selectedDistrict}
+      handleDistrictSelection={handleDistrictSelection}
+    />
+  );
+
+  return (
+    <div className="App">
+      <Header
+        handleYearSelection={handleYearSelection}
+      />
+      <Router>
+        <Switch>
+          <Route path="/" component={Map}/>
+        </Switch>
+      </Router>
+    </div>
+  )
+}
+
+class App1 extends Component<IAppProps, {}> {
   state = {
     selectedState: '',
     selectedDistrict: '',
@@ -116,7 +207,7 @@ class App extends Component<AppProps, {}> {
 
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: { errors: any; states: { districtsByState: any; states: any; }; legislators: { legislators: any; legislatorsByState: any; }; }) {
   return {
     errors: state.errors,
     districts: state.states.districtsByState,
@@ -126,4 +217,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps)(App1);
