@@ -77,17 +77,19 @@ const CongressMap = (props: ICongressMapProps) => {
     };
 
     const focusMap = (stateAbbr, districtNum) => {
-        let bbox = continentalBbox;
-        if (stateAbbr) {
-            bbox = bboxes[stateAbbr + districtNum];
+        if (map) {
+            let bbox = continentalBbox;
+            if (stateAbbr) {
+                bbox = bboxes[stateAbbr + districtNum];
+            }
+            const view = geoViewport.viewport(
+                bbox,
+                [window.innerWidth / 2.75, window.innerHeight / 2.75]
+            );
+            // console.log('bbox: ', bbox, 'view: ', view);
+            // @ts-ignore
+            map.easeTo(view);
         }
-        const view = geoViewport.viewport(
-            bbox,
-            [window.innerWidth / 2.75, window.innerHeight / 2.75]
-        );
-        // console.log('bbox: ', bbox, 'view: ', view);
-        // @ts-ignore
-        this.props.map.easeTo(view);
     };
 
     return (
@@ -99,6 +101,7 @@ const CongressMap = (props: ICongressMapProps) => {
             handleMapLoad={handleMapLoad}
             mapLoaded={mapLoaded}
             setMapLoaded={setMapLoaded}
+            focusMap={focusMap}
             filterDataset={filterDataset}
             selectedState={selectedState}
             selectedDistrict={selectedDistrict}

@@ -18,6 +18,7 @@ interface IMapProps {
   handleMapLoad: (event: MapLoadEvent) => void;
   mapLoaded: boolean;
   setMapLoaded: Function;
+  focusMap: Function;
   filterDataset: Function;
   selectedState: string;
   selectedDistrict: string;
@@ -140,7 +141,7 @@ export class Map extends Component<IMapProps, {}> {
       return;
     }
 
-    this.focusMap(
+    this.props.focusMap(
       district.properties.state,
       district.properties.number
     );
@@ -172,20 +173,20 @@ export class Map extends Component<IMapProps, {}> {
     this.setState({ expanded: false });
   };
 
-  focusMap = (stateAbbr, districtNum) => {
-    const { bboxes } = this.props;
-    let bbox = continentalBbox;
-    if (stateAbbr) {
-      bbox = bboxes[stateAbbr + districtNum];
-    }
-    const view = geoViewport.viewport(
-      bbox,
-      [window.innerWidth / 2.75, window.innerHeight / 2.75]
-    );
-    // console.log('bbox: ', bbox, 'view: ', view);
-    // @ts-ignore
-    this.props.map.easeTo(view);
-  };
+  // focusMap = (stateAbbr, districtNum) => {
+  //   const { bboxes } = this.props;
+  //   let bbox = continentalBbox;
+  //   if (stateAbbr) {
+  //     bbox = bboxes[stateAbbr + districtNum];
+  //   }
+  //   const view = geoViewport.viewport(
+  //     bbox,
+  //     [window.innerWidth / 2.75, window.innerHeight / 2.75]
+  //   );
+  //   // console.log('bbox: ', bbox, 'view: ', view);
+  //   // @ts-ignore
+  //   this.props.map.easeTo(view);
+  // };
 
   filterMap = () => {
 
@@ -196,7 +197,7 @@ export class Map extends Component<IMapProps, {}> {
 
     // this.filterUnderlyingStyle();
     this.props.filterDataset();
-    this.focusMap(selectedState, selectedDistrict);
+    this.props.focusMap(selectedState, selectedDistrict);
   };
 
   render() {
