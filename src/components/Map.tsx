@@ -5,6 +5,7 @@ import geoViewport from "@mapbox/geo-viewport/index";
 import InfoBox from './InfoBox/InfoBox';
 import MenuTree from './MenuTree/MenuTree';
 import CongressionalDistricts from './Layers/CongressionalDistricts';
+import { onMapFullRender } from '../utils/MapHelpers';
 
 import Config from '../config';
 
@@ -27,7 +28,7 @@ const continental = continentalView(window.innerWidth / 2, window.innerHeight / 
 
 const mapConf = Config.mapbox;
 
-const CongressMap1 = (props: IMapProps) => {
+const Map1 = (props: IMapProps) => {
   const { selectedState, selectedDistrict, handleDistrictSelection, bboxes, currentEntity, currentType } = props;
   let mapRef = createRef();
   let map = null;
@@ -62,13 +63,13 @@ const CongressMap1 = (props: IMapProps) => {
       const layerFilter = filter.concat([existingFilter]);
 
       // @ts-ignore
-      this.map.setFilter('districts_hover', layerFilter);
+      map.setFilter('districts_hover', layerFilter);
       // @ts-ignore
-      this.map.setFilter('districts_boundary', layerFilter);
+      map.setFilter('districts_boundary', layerFilter);
       // @ts-ignore
-      this.map.setFilter('districts_label', layerFilter);
+      map.setFilter('districts_label', layerFilter);
       // @ts-ignore
-      this.map.setFilter('districts_fill', layerFilter);
+      map.setFilter('districts_fill', layerFilter);
     }
   }, [map, selectedState, selectedDistrict]);
 
@@ -123,26 +124,10 @@ const CongressMap1 = (props: IMapProps) => {
     filterMap();
   }, [selectedState, selectedDistrict, filterMap]);
 
-  const onMapFullRender = () => {
-    if (map) {
-      // @ts-ignore
-      const mapIsLoaded = map.loaded();
-      // @ts-ignore
-      const styleIsLoaded = map.isStyleLoaded();
-      // @ts-ignore
-      const tilesAreLoaded = map.areTilesLoaded();
-      if (!mapIsLoaded || !tilesAreLoaded || !styleIsLoaded) {
-        setTimeout(onMapFullRender, 200);
-      } else {
-        setMapLoaded(true);
-      }
-    }
-  };
-
   const onMapLoad = () => {
     // @ts-ignore
     map = mapRef.getMap();
-    onMapFullRender();
+    onMapFullRender(map, setMapLoaded);
   };
 
   const updateViewport = viewport => {
@@ -305,11 +290,12 @@ const CongressMap1 = (props: IMapProps) => {
   )
 };
 
-export class CongressMap extends Component<IMapProps, {}> {
-  private mapRef = createRef();
-  map = null;
-  hoveredDistrictId = null;
+export class Map extends Component<IMapProps, {}> {
+  mapRef = createRef(); // this is not in state because it creates an infinite loop when trying to use it to set a ref from the instance when it is
+  hoveredDistrictId = null; // this is not in state because it doesn't un-hover the districts when it is
+
   state = {
+    map: null,
     viewport: {
       longitude: continental.center[0],
       latitude: continental.center[1],
@@ -319,7 +305,6 @@ export class CongressMap extends Component<IMapProps, {}> {
     },
     mapLoaded: false,
     expanded: false,
-    hoveredDistrictId: null,
     district: {},
   };
 
@@ -330,27 +315,18 @@ export class CongressMap extends Component<IMapProps, {}> {
     }
   };
 
+  setMapLoaded = (bool: boolean) => {
+    this.setState({mapLoaded: bool});
+  }
+
   onMapLoad = () => {
     // @ts-ignore
-    this.map = this.mapRef.getMap();
-    this.onMapFullRender();
+    this.setState({map: this.mapRef.getMap()}, () => {
+      onMapFullRender(this.state.map, this.setMapLoaded);
+    });
   };
 
-  onMapFullRender = () => {
-    // @ts-ignore
-    const mapIsLoaded = this.map.loaded();
-    // @ts-ignore
-    const styleIsLoaded = this.map.isStyleLoaded();
-    // @ts-ignore
-    const tilesAreLoaded = this.map.areTilesLoaded();
-    if (!mapIsLoaded || !tilesAreLoaded || !styleIsLoaded) {
-      setTimeout(this.onMapFullRender, 200);
-    } else {
-      this.setState({ mapLoaded: true });
-    }
-  };
-
-  updateViewport = viewport => {
+  setViewport = viewport => {
     this.setState({ viewport });
   };
 
@@ -358,7 +334,7 @@ export class CongressMap extends Component<IMapProps, {}> {
     // remove the hover setting from whatever district was being hovered before
     if (this.hoveredDistrictId) {
       // @ts-ignore
-      this.map.setFeatureState({
+      this.state.map.setFeatureState({
         source: 'districts2018',
         sourceLayer: 'districts',
         id: this.hoveredDistrictId
@@ -372,7 +348,7 @@ export class CongressMap extends Component<IMapProps, {}> {
 
     // Set hover to true on the currently hovered district
     // @ts-ignore
-    this.map.setFeatureState({
+    this.state.map.setFeatureState({
       source: 'districts2018',
       sourceLayer: 'districts',
       id: this.hoveredDistrictId
@@ -381,7 +357,7 @@ export class CongressMap extends Component<IMapProps, {}> {
     });
   }
 
-  mouseMove = (evt) => {
+  handleMouseMove = (evt) => {
     /*
     TODO: the mouse is no longer being changed with the new map.
      */
@@ -389,7 +365,7 @@ export class CongressMap extends Component<IMapProps, {}> {
 
     if (mapLoaded) {
       // @ts-ignore
-      const features = this.map.queryRenderedFeatures(evt.point);
+      const features = this.state.map.queryRenderedFeatures(evt.point);
 
       let cursorStyle = '';
 
@@ -412,14 +388,14 @@ export class CongressMap extends Component<IMapProps, {}> {
       }
 
       // @ts-ignore
-      this.map.getCanvas().style.cursor = cursorStyle;
+      this.state.map.getCanvas().style.cursor = cursorStyle;
     }
 
   };
 
-  mapClick = (evt) => {
+  handleMapClick = (evt) => {
     // @ts-ignore
-    const features = this.map.queryRenderedFeatures(evt.point);
+    const features = this.state.map.queryRenderedFeatures(evt.point);
 
     // console.log('features: ', features);
 
@@ -446,7 +422,7 @@ export class CongressMap extends Component<IMapProps, {}> {
       district.properties.number
     );
 
-    // this.map.setFeatureState({
+    // this.state.map.setFeatureState({
     //   source: 'districts2018',
     //   sourceLayer: 'districts',
     //   id: district.id,
@@ -459,13 +435,13 @@ export class CongressMap extends Component<IMapProps, {}> {
       expanded: true
     }, () => {
       // console.log('district: ', district);
-      // console.log('source: ', this.map.getSource('composite'));
-      // console.log('layer: ', this.map.getLayer('districts'));
+      // console.log('source: ', this.state.map.getSource('composite'));
+      // console.log('layer: ', this.state.map.getLayer('districts'));
     });
 
   };
 
-  closeClick = () => {
+  handleCloseClick = () => {
     /*
      TODO: There's a bug in this which makes whatever district
       is underneath the X become selected when the X is clicked.
@@ -485,7 +461,7 @@ export class CongressMap extends Component<IMapProps, {}> {
     );
     // console.log('bbox: ', bbox, 'view: ', view);
     // @ts-ignore
-    this.map.easeTo(view);
+    this.state.map.easeTo(view);
   };
 
   filterMap = () => {
@@ -508,7 +484,7 @@ export class CongressMap extends Component<IMapProps, {}> {
 
     for (var i = 1; i <= 5; i++) {
       // @ts-ignore
-      let existingFilter = this.map.getFilter('districts_' + i);
+      let existingFilter = this.state.map.getFilter('districts_' + i);
       if (existingFilter[0] === 'all') {
         existingFilter = existingFilter[existingFilter.length - 1];
       }
@@ -520,11 +496,11 @@ export class CongressMap extends Component<IMapProps, {}> {
 
       const layerFilter = filter.concat([existingFilter]);
       // @ts-ignore
-      this.map.setFilter('districts_' + i, layerFilter);
+      this.state.map.setFilter('districts_' + i, layerFilter);
       // @ts-ignore
-      this.map.setFilter('districts_' + i + '_boundary', layerFilter);
+      this.state.map.setFilter('districts_' + i + '_boundary', layerFilter);
       // @ts-ignore
-      this.map.setFilter('districts_' + i + '_label', layerFilter);
+      this.state.map.setFilter('districts_' + i + '_label', layerFilter);
     }
   };
 
@@ -535,7 +511,7 @@ export class CongressMap extends Component<IMapProps, {}> {
     } = this.props;
 
     // @ts-ignore
-    let existingFilter = this.map.getFilter('districts_hover');
+    let existingFilter = this.state.map.getFilter('districts_hover');
 
     if (existingFilter[0] === 'all') {
       existingFilter = existingFilter[existingFilter.length - 1];
@@ -549,13 +525,13 @@ export class CongressMap extends Component<IMapProps, {}> {
     const layerFilter = filter.concat([existingFilter]);
 
     // @ts-ignore
-    this.map.setFilter('districts_hover', layerFilter);
+    this.state.map.setFilter('districts_hover', layerFilter);
     // @ts-ignore
-    this.map.setFilter('districts_boundary', layerFilter);
+    this.state.map.setFilter('districts_boundary', layerFilter);
     // @ts-ignore
-    this.map.setFilter('districts_label', layerFilter);
+    this.state.map.setFilter('districts_label', layerFilter);
     // @ts-ignore
-    this.map.setFilter('districts_fill', layerFilter);
+    this.state.map.setFilter('districts_fill', layerFilter);
   };
 
   render() {
@@ -565,7 +541,7 @@ export class CongressMap extends Component<IMapProps, {}> {
     console.log('mapProps: ', this.props)
     const congressionalDistricts = mapLoaded ? (
       <CongressionalDistricts
-        map={this.map}
+        map={this.state.map}
       />
     ) : null;
 
@@ -586,10 +562,10 @@ export class CongressMap extends Component<IMapProps, {}> {
           height="100%"
           mapStyle={mapConf.style}
           mapboxApiAccessToken={mapConf.accessToken}
-          onViewportChange={this.updateViewport}
+          onViewportChange={this.setViewport}
           onLoad={this.onMapLoad}
-          onMouseMove={this.mouseMove}
-          onClick={this.mapClick}
+          onMouseMove={this.handleMouseMove}
+          onClick={this.handleMapClick}
         >
 
           {congressionalDistricts}
@@ -597,11 +573,11 @@ export class CongressMap extends Component<IMapProps, {}> {
           <InfoBox
             district={this.state.district}
             expanded={this.state.expanded}
-            closeClick={this.closeClick}
+            closeClick={this.handleCloseClick}
           />
           <div style={{ position: 'absolute', left: 10, top: 10 }}>
             <NavigationControl
-              onViewportChange={this.updateViewport}
+              onViewportChange={this.setViewport}
             />
           </div>
         </ReactMapGl>
@@ -618,4 +594,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(CongressMap);
+export default connect(mapStateToProps)(Map);

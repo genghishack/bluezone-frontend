@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
 import Header from './components/Header';
-import CongressMap from './components/Map';
+import CongressMap from './components/CongressMap';
 import Config from './config';
 
 import {getLegislatorsByState} from './utils/data-index';
@@ -22,8 +22,6 @@ const apiConfig = Config.apiGateway;
 
 const App = (props: IAppProps) => {
   const { dispatch } = props;
-  const [selectedState, setSelectedState] = useState('');
-  const [selectedDistrict, setSelectedDistrict] = useState('');
 
   useLayoutEffect(() => {
     fetch(`${apiConfig.URL}/public/state/districts`)
@@ -70,11 +68,6 @@ const App = (props: IAppProps) => {
 
   }, [dispatch]);
 
-  const handleDistrictSelection = (stateAbbr: string, districtNum:string = '') => {
-    setSelectedState(stateAbbr);
-    setSelectedDistrict(districtNum);
-  };
-
   const handleYearSelection = (year) => {
     fetch(`${apiConfig.URL}/public/legislator?date=${year}`)
       .then(res => res.json())
@@ -89,14 +82,6 @@ const App = (props: IAppProps) => {
       )
   };
 
-  const Map = () => (
-    <CongressMap
-      selectedState={selectedState}
-      selectedDistrict={selectedDistrict}
-      handleDistrictSelection={handleDistrictSelection}
-    />
-  );
-
   return (
     <div className="App">
       <Header
@@ -104,7 +89,7 @@ const App = (props: IAppProps) => {
       />
       <Router>
         <Switch>
-          <Route path="/" component={Map}/>
+          <Route path="/" component={CongressMap}/>
         </Switch>
       </Router>
     </div>
@@ -112,11 +97,6 @@ const App = (props: IAppProps) => {
 }
 
 class App1 extends Component<IAppProps, {}> {
-  state = {
-    selectedState: '',
-    selectedDistrict: '',
-  };
-
   componentDidMount = () => {
     fetch(`${apiConfig.URL}/public/state/districts`)
       .then(res => res.json())
@@ -161,13 +141,6 @@ class App1 extends Component<IAppProps, {}> {
       )
   };
 
-  handleDistrictSelection = (stateAbbr: string, districtNum:string = '') => {
-    this.setState({
-      selectedState: stateAbbr,
-      selectedDistrict: districtNum
-    });
-  };
-
   handleYearSelection = (year) => {
     fetch(`${apiConfig.URL}/public/legislator?date=${year}`)
       .then(res => res.json())
@@ -182,14 +155,6 @@ class App1 extends Component<IAppProps, {}> {
       )
   };
 
-  Map = () => (
-    <CongressMap
-      selectedState={this.state.selectedState}
-      selectedDistrict={this.state.selectedDistrict}
-      handleDistrictSelection={this.handleDistrictSelection}
-    />
-  );
-
   render = () => {
     return (
       <div className="App">
@@ -198,7 +163,7 @@ class App1 extends Component<IAppProps, {}> {
         />
         <Router>
           <Switch>
-            <Route path="/" component={this.Map}/>
+            <Route path="/" component={CongressMap}/>
           </Switch>
         </Router>
       </div>
