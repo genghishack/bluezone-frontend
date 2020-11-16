@@ -15,6 +15,7 @@ interface IMapProps {
   handleMapLoad: (event: MapLoadEvent) => void;
   mapLoaded: boolean;
   setMapLoaded: Function;
+  filterDataset: Function;
   selectedState: string;
   selectedDistrict: string;
   handleDistrictSelection: Function;
@@ -210,78 +211,15 @@ export class Map extends Component<IMapProps, {}> {
     } = this.props;
 
     // this.filterUnderlyingStyle();
-    this.filterDataset();
+    this.props.filterDataset();
     this.focusMap(selectedState, selectedDistrict);
   };
 
-  filterUnderlyingStyle = () => {
-    const {
-      selectedState,
-      selectedDistrict
-    } = this.props;
-
-    for (var i = 1; i <= 5; i++) {
-      // @ts-ignore
-      let existingFilter = this.props.map.getFilter('districts_' + i);
-      if (existingFilter[0] === 'all') {
-        existingFilter = existingFilter[existingFilter.length - 1];
-      }
-      const filter = ['all'];
-      // @ts-ignore
-      if (selectedState) filter.push(['==', 'state', selectedState]);
-      // @ts-ignore
-      if (selectedDistrict) filter.push(['==', 'number', selectedDistrict]);
-
-      const layerFilter = filter.concat([existingFilter]);
-      // @ts-ignore
-      this.props.map.setFilter('districts_' + i, layerFilter);
-      // @ts-ignore
-      this.props.map.setFilter('districts_' + i + '_boundary', layerFilter);
-      // @ts-ignore
-      this.props.map.setFilter('districts_' + i + '_label', layerFilter);
-    }
-  };
-
-  filterDataset = () => {
-    const {
-      selectedState,
-      selectedDistrict
-    } = this.props;
-
-    // @ts-ignore
-    let existingFilter = this.props.map.getFilter('districts_hover');
-
-    if (existingFilter[0] === 'all') {
-      existingFilter = existingFilter[existingFilter.length - 1];
-    }
-    const filter = ['all'];
-    // @ts-ignore
-    if (selectedState) filter.push(['==', 'state', selectedState]);
-    // @ts-ignore
-    if (selectedDistrict) filter.push(['==', 'number', selectedDistrict]);
-
-    const layerFilter = filter.concat([existingFilter]);
-
-    // @ts-ignore
-    this.props.map.setFilter('districts_hover', layerFilter);
-    // @ts-ignore
-    this.props.map.setFilter('districts_boundary', layerFilter);
-    // @ts-ignore
-    this.props.map.setFilter('districts_label', layerFilter);
-    // @ts-ignore
-    this.props.map.setFilter('districts_fill', layerFilter);
-  };
-
   render() {
-    const { handleDistrictSelection, handleMapLoad, mapLoaded } = this.props;
+    const { map, handleDistrictSelection, mapLoaded } = this.props;
     const { viewport } = this.state;
 
     console.log('mapProps: ', this.props)
-    const congressionalDistricts = mapLoaded ? (
-      <CongressionalDistricts
-        map={this.props.map}
-      />
-    ) : null;
 
     return (
       <div id="main-container">
@@ -306,7 +244,11 @@ export class Map extends Component<IMapProps, {}> {
           onClick={this.handleMapClick}
         >
 
-          {congressionalDistricts}
+          {mapLoaded ? (
+            <CongressionalDistricts
+              map={map}
+            />
+          ) : null}
 
           <InfoBox
             district={this.state.district}
