@@ -1,13 +1,11 @@
 import React, { Component, createRef } from 'react';
 import { connect } from "react-redux";
 import ReactMapGl, { MapLoadEvent, NavigationControl, ViewportChangeHandler } from 'react-map-gl';
-import geoViewport from "@mapbox/geo-viewport/index";
 import InfoBox from './InfoBox/InfoBox';
 import MenuTree from './MenuTree/MenuTree';
 import CongressionalDistricts from './Layers/CongressionalDistricts';
 import { ensureMapFullRender } from '../utils/MapHelpers';
 
-import { continentalBbox } from '../constants';
 import Config from '../config';
 
 interface IMapProps {
@@ -19,7 +17,12 @@ interface IMapProps {
   mapLoaded: boolean;
   setMapLoaded: Function;
   focusMap: Function;
+  filterMap: Function;
   filterDataset: Function;
+  expanded: boolean;
+  setExpanded: Function;
+  district: any;
+  setDistrict: Function;
   selectedState: string;
   selectedDistrict: string;
   handleDistrictSelection: Function;
@@ -34,15 +37,10 @@ export class Map extends Component<IMapProps, {}> {
   mapRef = createRef(); // this is not in state because it creates an infinite loop when trying to use it to set a ref from the instance when it is
   hoveredDistrictId = null; // this is not in state because it doesn't un-hover the districts when it is
 
-  state = {
-    expanded: false,
-    district: {},
-  };
-
   componentDidUpdate = (prevProps) => {
     if (prevProps.selectedState !== this.props.selectedState
       || prevProps.selectedDistrict !== this.props.selectedDistrict) {
-      this.filterMap();
+      this.props.filterMap();
     }
   };
 
@@ -134,10 +132,8 @@ export class Map extends Component<IMapProps, {}> {
     }
 
     if (!district) {
-      this.setState({
-        district: {},
-        expanded: false
-      });
+      this.props.setDistrict({});
+      this.props.setExpanded(false);
       return;
     }
 
@@ -154,14 +150,11 @@ export class Map extends Component<IMapProps, {}> {
     //   color: true
     // });
 
-    this.setState({
-      district: district,
-      expanded: true
-    }, () => {
-      // console.log('district: ', district);
-      // console.log('source: ', this.props.map.getSource('composite'));
-      // console.log('layer: ', this.props.map.getLayer('districts'));
-    });
+    this.props.setDistrict(district);
+    this.props.setExpanded(true);
+    // console.log('district: ', district);
+    // console.log('source: ', this.props.map.getSource('composite'));
+    // console.log('layer: ', this.props.map.getLayer('districts'));
 
   };
 
@@ -170,34 +163,7 @@ export class Map extends Component<IMapProps, {}> {
      TODO: There's a bug in this which makes whatever district
       is underneath the X become selected when the X is clicked.
     */
-    this.setState({ expanded: false });
-  };
-
-  // focusMap = (stateAbbr, districtNum) => {
-  //   const { bboxes } = this.props;
-  //   let bbox = continentalBbox;
-  //   if (stateAbbr) {
-  //     bbox = bboxes[stateAbbr + districtNum];
-  //   }
-  //   const view = geoViewport.viewport(
-  //     bbox,
-  //     [window.innerWidth / 2.75, window.innerHeight / 2.75]
-  //   );
-  //   // console.log('bbox: ', bbox, 'view: ', view);
-  //   // @ts-ignore
-  //   this.props.map.easeTo(view);
-  // };
-
-  filterMap = () => {
-
-    const {
-      selectedState,
-      selectedDistrict
-    } = this.props;
-
-    // this.filterUnderlyingStyle();
-    this.props.filterDataset();
-    this.props.focusMap(selectedState, selectedDistrict);
+    this.props.setExpanded(false);
   };
 
   render() {
@@ -240,8 +206,8 @@ export class Map extends Component<IMapProps, {}> {
             />
           </div>
           <InfoBox
-            district={this.state.district}
-            expanded={this.state.expanded}
+            district={this.props.district}
+            expanded={this.props.expanded}
             closeClick={this.handleCloseClick}
           />
         </ReactMapGl>

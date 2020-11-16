@@ -15,6 +15,8 @@ const CongressMap = (props: ICongressMapProps) => {
     // const [map, setMap] = useStateWithCallback(null, () => onMapFullRender(map, setMapLoaded));
     const [map, setMap] = useState(null);
     const [viewport, setViewport] = useState(continentalViewport);
+    const [expanded, setExpanded] = useState(false);
+    const [district, setDistrict] = useState({});
     const [selectedState, setSelectedState] = useState('');
     const [selectedDistrict, setSelectedDistrict] = useState('');
 
@@ -92,6 +94,12 @@ const CongressMap = (props: ICongressMapProps) => {
         }
     };
 
+    const filterMap = () => {
+        // this.filterUnderlyingStyle();
+        filterDataset();
+        focusMap(selectedState, selectedDistrict);
+    };
+
     return (
         <Map
             map={map}
@@ -102,7 +110,12 @@ const CongressMap = (props: ICongressMapProps) => {
             mapLoaded={mapLoaded}
             setMapLoaded={setMapLoaded}
             focusMap={focusMap}
+            filterMap={filterMap}
             filterDataset={filterDataset}
+            expanded={expanded}
+            setExpanded={setExpanded}
+            district={district}
+            setDistrict={setDistrict}
             selectedState={selectedState}
             selectedDistrict={selectedDistrict}
             handleDistrictSelection={handleDistrictSelection}
