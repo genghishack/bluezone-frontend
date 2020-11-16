@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
-import { continentalViewport } from '../constants';
+import { connect } from 'react-redux';
+import geoViewport from "@mapbox/geo-viewport/index";
+import { continentalBbox, continentalViewport } from '../constants';
 import Map from './Map';
 
 interface ICongressMapProps {
+    bboxes?: any;
 }
 
 const CongressMap = (props: ICongressMapProps) => {
+    const { bboxes } = props;
+
     const [mapLoaded, setMapLoaded] = useState(false);
     // const [map, setMap] = useStateWithCallback(null, () => onMapFullRender(map, setMapLoaded));
     const [map, setMap] = useState(null);
@@ -71,6 +76,20 @@ const CongressMap = (props: ICongressMapProps) => {
         }
     };
 
+    const focusMap = (stateAbbr, districtNum) => {
+        let bbox = continentalBbox;
+        if (stateAbbr) {
+            bbox = bboxes[stateAbbr + districtNum];
+        }
+        const view = geoViewport.viewport(
+            bbox,
+            [window.innerWidth / 2.75, window.innerHeight / 2.75]
+        );
+        // console.log('bbox: ', bbox, 'view: ', view);
+        // @ts-ignore
+        this.props.map.easeTo(view);
+    };
+
     return (
         <Map
             map={map}
@@ -88,4 +107,10 @@ const CongressMap = (props: ICongressMapProps) => {
     );
 }
 
-export default CongressMap;
+const mapStateToProps = state => {
+    return {
+        bboxes: state.states.bboxes,
+    };
+}
+
+export default connect(mapStateToProps)(CongressMap);

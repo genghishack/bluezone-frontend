@@ -233,16 +233,16 @@ export class Map extends Component<IMapProps, {}> {
             />
           ) : null}
 
+          <div style={{ position: 'absolute', right: 10, top: 10 }}>
+            <NavigationControl
+              onViewportChange={setViewport}
+            />
+          </div>
           <InfoBox
             district={this.state.district}
             expanded={this.state.expanded}
             closeClick={this.handleCloseClick}
           />
-          <div style={{ position: 'absolute', left: 10, top: 10 }}>
-            <NavigationControl
-              onViewportChange={setViewport}
-            />
-          </div>
         </ReactMapGl>
       </div>
     );
