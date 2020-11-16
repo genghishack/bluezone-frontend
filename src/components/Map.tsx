@@ -1,18 +1,20 @@
 import React, { Component, createRef } from 'react';
 import { connect } from "react-redux";
-import ReactMapGl, { MapLoadEvent, NavigationControl } from 'react-map-gl';
+import ReactMapGl, { MapLoadEvent, NavigationControl, ViewportChangeHandler } from 'react-map-gl';
 import geoViewport from "@mapbox/geo-viewport/index";
 import InfoBox from './InfoBox/InfoBox';
 import MenuTree from './MenuTree/MenuTree';
 import CongressionalDistricts from './Layers/CongressionalDistricts';
 import { ensureMapFullRender } from '../utils/MapHelpers';
 
-import { continentalBbox, continentalViewport } from '../constants';
+import { continentalBbox } from '../constants';
 import Config from '../config';
 
 interface IMapProps {
   map: any;
   setMap: Function;
+  viewport: any;
+  setViewport: ViewportChangeHandler;
   handleMapLoad: (event: MapLoadEvent) => void;
   mapLoaded: boolean;
   setMapLoaded: Function;
@@ -32,12 +34,11 @@ export class Map extends Component<IMapProps, {}> {
   hoveredDistrictId = null; // this is not in state because it doesn't un-hover the districts when it is
 
   state = {
-    viewport: continentalViewport,
     expanded: false,
     district: {},
   };
 
-  componentDidUpdate = (prevProps, prevState) => {
+  componentDidUpdate = (prevProps) => {
     if (prevProps.selectedState !== this.props.selectedState
       || prevProps.selectedDistrict !== this.props.selectedDistrict) {
       this.filterMap();
@@ -50,10 +51,6 @@ export class Map extends Component<IMapProps, {}> {
 
     const { map, setMapLoaded } = this.props;
     ensureMapFullRender(map, setMapLoaded);
-  };
-
-  setViewport = viewport => {
-    this.setState({ viewport });
   };
 
   setHoveredDistrict(district) {
@@ -203,8 +200,7 @@ export class Map extends Component<IMapProps, {}> {
   };
 
   render() {
-    const { map, handleDistrictSelection, mapLoaded } = this.props;
-    const { viewport } = this.state;
+    const { map, handleDistrictSelection, mapLoaded, viewport, setViewport } = this.props;
 
     console.log('mapProps: ', this.props)
 
@@ -225,7 +221,7 @@ export class Map extends Component<IMapProps, {}> {
           height="100%"
           mapStyle={mapConf.style}
           mapboxApiAccessToken={mapConf.accessToken}
-          onViewportChange={this.setViewport}
+          onViewportChange={setViewport}
           onLoad={this.onMapLoad}
           onMouseMove={this.handleMouseMove}
           onClick={this.handleMapClick}
@@ -244,7 +240,7 @@ export class Map extends Component<IMapProps, {}> {
           />
           <div style={{ position: 'absolute', left: 10, top: 10 }}>
             <NavigationControl
-              onViewportChange={this.setViewport}
+              onViewportChange={setViewport}
             />
           </div>
         </ReactMapGl>

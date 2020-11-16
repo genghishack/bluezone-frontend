@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { continentalViewport } from '../constants';
 import Map from './Map';
 
 interface ICongressMapProps {
@@ -8,6 +9,7 @@ const CongressMap = (props: ICongressMapProps) => {
     const [mapLoaded, setMapLoaded] = useState(false);
     // const [map, setMap] = useStateWithCallback(null, () => onMapFullRender(map, setMapLoaded));
     const [map, setMap] = useState(null);
+    const [viewport, setViewport] = useState(continentalViewport);
     const [selectedState, setSelectedState] = useState('');
     const [selectedDistrict, setSelectedDistrict] = useState('');
 
@@ -73,6 +75,8 @@ const CongressMap = (props: ICongressMapProps) => {
         <Map
             map={map}
             setMap={setMap}
+            viewport={viewport}
+            setViewport={setViewport}
             handleMapLoad={handleMapLoad}
             mapLoaded={mapLoaded}
             setMapLoaded={setMapLoaded}
