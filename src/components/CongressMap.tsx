@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import geoViewport from "@mapbox/geo-viewport/index";
-import { continentalBbox, continentalViewport } from '../constants';
+import { continentalBbox, continentalViewport, layerIds } from '../constants';
 import Map from './Map';
 
 interface ICongressMapProps {
@@ -100,6 +100,48 @@ const CongressMap = (props: ICongressMapProps) => {
         focusMap(selectedState, selectedDistrict);
     };
 
+    const handleMapClick = (evt) => {
+        if (map) {
+            // @ts-ignore
+            const features = map.queryRenderedFeatures(evt.point);
+
+            // console.log('features: ', features);
+
+            let district;
+            const rFilteredDistricts = features.filter(feature => {
+                return layerIds.indexOf(feature.layer.id) !== -1;
+            });
+            if (rFilteredDistricts.length) {
+                district = rFilteredDistricts[0];
+            }
+
+            if (!district) {
+                setDistrict({});
+                setExpanded(false);
+                return;
+            }
+
+            focusMap(
+                district.properties.state,
+                district.properties.number
+            );
+
+            // this.props.map.setFeatureState({
+            //   source: 'districts2018',
+            //   sourceLayer: 'districts',
+            //   id: district.id,
+            // }, {
+            //   color: true
+            // });
+
+            setDistrict(district);
+            setExpanded(true);
+            // console.log('district: ', district);
+            // console.log('source: ', this.props.map.getSource('composite'));
+            // console.log('layer: ', this.props.map.getLayer('districts'));
+        }
+    };
+
     return (
         <Map
             map={map}
@@ -107,6 +149,7 @@ const CongressMap = (props: ICongressMapProps) => {
             viewport={viewport}
             setViewport={setViewport}
             handleMapLoad={handleMapLoad}
+            handleMapClick={handleMapClick}
             mapLoaded={mapLoaded}
             setMapLoaded={setMapLoaded}
             focusMap={focusMap}

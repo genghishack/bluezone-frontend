@@ -14,6 +14,7 @@ interface IMapProps {
   viewport: any;
   setViewport: ViewportChangeHandler;
   handleMapLoad: (event: MapLoadEvent) => void;
+  handleMapClick: Function;
   mapLoaded: boolean;
   setMapLoaded: Function;
   focusMap: Function;
@@ -115,49 +116,6 @@ export class Map extends Component<IMapProps, {}> {
 
   };
 
-  handleMapClick = (evt) => {
-    // @ts-ignore
-    const features = this.props.map.queryRenderedFeatures(evt.point);
-
-    // console.log('features: ', features);
-
-    const layerIds = mapConf.layerIds;
-
-    let district;
-    const rFilteredDistricts = features.filter(feature => {
-      return layerIds.indexOf(feature.layer.id) !== -1;
-    });
-    if (rFilteredDistricts.length) {
-      district = rFilteredDistricts[0];
-    }
-
-    if (!district) {
-      this.props.setDistrict({});
-      this.props.setExpanded(false);
-      return;
-    }
-
-    this.props.focusMap(
-      district.properties.state,
-      district.properties.number
-    );
-
-    // this.props.map.setFeatureState({
-    //   source: 'districts2018',
-    //   sourceLayer: 'districts',
-    //   id: district.id,
-    // }, {
-    //   color: true
-    // });
-
-    this.props.setDistrict(district);
-    this.props.setExpanded(true);
-    // console.log('district: ', district);
-    // console.log('source: ', this.props.map.getSource('composite'));
-    // console.log('layer: ', this.props.map.getLayer('districts'));
-
-  };
-
   handleCloseClick = () => {
     /*
      TODO: There's a bug in this which makes whatever district
@@ -167,7 +125,7 @@ export class Map extends Component<IMapProps, {}> {
   };
 
   render() {
-    const { map, handleDistrictSelection, mapLoaded, viewport, setViewport } = this.props;
+    const { map, handleDistrictSelection, handleMapClick, mapLoaded, viewport, setViewport } = this.props;
 
     console.log('mapProps: ', this.props)
 
@@ -191,7 +149,7 @@ export class Map extends Component<IMapProps, {}> {
           onViewportChange={setViewport}
           onLoad={this.onMapLoad}
           onMouseMove={this.handleMouseMove}
-          onClick={this.handleMapClick}
+          onClick={handleMapClick}
         >
 
           {mapLoaded ? (
@@ -205,12 +163,12 @@ export class Map extends Component<IMapProps, {}> {
               onViewportChange={setViewport}
             />
           </div>
-          <InfoBox
-            district={this.props.district}
-            expanded={this.props.expanded}
-            closeClick={this.handleCloseClick}
-          />
         </ReactMapGl>
+        <InfoBox
+          district={this.props.district}
+          expanded={this.props.expanded}
+          closeClick={this.handleCloseClick}
+        />
       </div>
     );
   }

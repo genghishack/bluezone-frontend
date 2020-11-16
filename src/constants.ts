@@ -1,5 +1,8 @@
 import geoViewport, { BoundingBox } from "@mapbox/geo-viewport";
 
+// Note: this doesn't really belong here
+export const layerIds = ['districts_hover'];
+
 export const continentalBbox: BoundingBox = [-128.8, 23.6, -65.4, 50.2];
 
 export const continentalViewport = (() => {

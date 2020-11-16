@@ -5,7 +5,7 @@ import Legislator from '../Legislator';
 import "./InfoBox.scss";
 
 import closeSVG from "../../assets/close_icon.png"
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 
 interface IInfoBoxProps {
   district: any;
@@ -67,11 +67,11 @@ const InfoBox = (props: IInfoBoxProps) => {
               <div className="title">Senators</div>
               {sens.length ?
                 sens.map((sen: any) => (
-                    <Legislator
-                      key={sen.id.bioguide}
-                      data={sen}
-                    />
-                  )
+                  <Legislator
+                    key={sen.id.bioguide}
+                    data={sen}
+                  />
+                )
                 ) : (
                   <div className="no-senators">
                     Non-State U.S. Territories and the District of Columbia have no senators.
@@ -84,7 +84,10 @@ const InfoBox = (props: IInfoBoxProps) => {
     )
   } else {
     return (
-      <div className="no-info"></div>
+      <div
+        id="info_box_wrapper"
+        className={`no-info info_box_wrapper ${expandedClass}`}
+      ></div>
     )
   }
 };
