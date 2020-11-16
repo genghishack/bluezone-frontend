@@ -22,7 +22,7 @@ const CongressMap = (props: ICongressMapProps) => {
     const handleMapLoad = (mapRef) => {
         // @ts-ignore
         setMap(mapRef.getMap());
-        onMapFullRender(map, setMapLoaded);
+        // onMapFullRender(map, setMapLoaded);
     };
 
     return (
@@ -31,6 +31,7 @@ const CongressMap = (props: ICongressMapProps) => {
             setMap={setMap}
             handleMapLoad={handleMapLoad}
             mapLoaded={mapLoaded}
+            setMapLoaded={setMapLoaded}
             selectedState={selectedState}
             selectedDistrict={selectedDistrict}
             handleDistrictSelection={handleDistrictSelection}

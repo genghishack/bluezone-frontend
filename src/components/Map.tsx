@@ -14,6 +14,7 @@ interface IMapProps {
   setMap: Function;
   handleMapLoad: (event: MapLoadEvent) => void;
   mapLoaded: boolean;
+  setMapLoaded: Function;
   selectedState: string;
   selectedDistrict: string;
   handleDistrictSelection: Function;
@@ -60,7 +61,7 @@ export class Map extends Component<IMapProps, {}> {
     this.props.handleMapLoad(this.mapRef);
     //@ts-ignore
     // this.props.setMap(this.mapRef.getMap());
-    // onMapFullRender(this.props.map, setMapLoaded);
+    onMapFullRender(this.props.map, this.props.setMapLoaded);
     // @ts-ignore
     // this.setState({map: this.mapRef.getMap()}, () => {
     //   onMapFullRender(this.props.map, this.setMapLoaded);
