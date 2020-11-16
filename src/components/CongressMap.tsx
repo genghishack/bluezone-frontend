@@ -1,7 +1,4 @@
 import React, { useState } from 'react';
-import { MapLoadEvent } from 'react-map-gl';
-import useStateWithCallback from 'use-state-with-callback';
-import { onMapFullRender } from '../utils/MapHelpers';
 import Map from './Map';
 
 interface ICongressMapProps {
@@ -22,7 +19,6 @@ const CongressMap = (props: ICongressMapProps) => {
     const handleMapLoad = (mapRef) => {
         // @ts-ignore
         setMap(mapRef.getMap());
-        // onMapFullRender(map, setMapLoaded);
     };
 
     return (

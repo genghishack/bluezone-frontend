@@ -5,7 +5,7 @@ import geoViewport from "@mapbox/geo-viewport/index";
 import InfoBox from './InfoBox/InfoBox';
 import MenuTree from './MenuTree/MenuTree';
 import CongressionalDistricts from './Layers/CongressionalDistricts';
-import { onMapFullRender } from '../utils/MapHelpers';
+import { ensureMapFullRender } from '../utils/MapHelpers';
 
 import Config from '../config';
 
@@ -58,14 +58,10 @@ export class Map extends Component<IMapProps, {}> {
 
   onMapLoad = () => {
     //@ts-ignore
-    this.props.handleMapLoad(this.mapRef);
-    //@ts-ignore
-    // this.props.setMap(this.mapRef.getMap());
-    onMapFullRender(this.props.map, this.props.setMapLoaded);
-    // @ts-ignore
-    // this.setState({map: this.mapRef.getMap()}, () => {
-    //   onMapFullRender(this.props.map, this.setMapLoaded);
-    // });
+    this.props.handleMapLoad(this.mapRef); // changes value of map prop
+
+    const { map, setMapLoaded } = this.props;
+    ensureMapFullRender(map, setMapLoaded);
   };
 
   setViewport = viewport => {

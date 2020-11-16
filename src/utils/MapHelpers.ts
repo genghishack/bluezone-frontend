@@ -4,9 +4,7 @@ type TMap = {
   areTilesLoaded: () => any; 
 } | null
 
-type TMapLoaded = (arg0: boolean) => void; // Function would work
-
-export const onMapFullRender = (map: TMap, setMapLoaded: TMapLoaded) => {
+export const ensureMapFullRender = (map: TMap, setMapLoaded: Function) => {
   if (map) {
     // @ts-ignore
     const mapIsLoaded = map.loaded();
@@ -15,7 +13,7 @@ export const onMapFullRender = (map: TMap, setMapLoaded: TMapLoaded) => {
     // @ts-ignore
     const tilesAreLoaded = map.areTilesLoaded();
     if (!mapIsLoaded || !tilesAreLoaded || !styleIsLoaded) {
-      setTimeout(onMapFullRender, 200);
+      setTimeout(ensureMapFullRender, 200);
     } else {
       setMapLoaded(true);
     }
