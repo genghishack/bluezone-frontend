@@ -9,7 +9,8 @@ interface ICongressMapProps {
 
 const CongressMap = (props: ICongressMapProps) => {
     const [mapLoaded, setMapLoaded] = useState(false);
-    const [map, setMap] = useStateWithCallback(null, () => onMapFullRender(map, setMapLoaded));
+    // const [map, setMap] = useStateWithCallback(null, () => onMapFullRender(map, setMapLoaded));
+    const [map, setMap] = useState(null);
     const [selectedState, setSelectedState] = useState('');
     const [selectedDistrict, setSelectedDistrict] = useState('');
 
@@ -25,6 +26,8 @@ const CongressMap = (props: ICongressMapProps) => {
 
     return (
         <Map
+            map={map}
+            setMap={setMap}
             selectedState={selectedState}
             selectedDistrict={selectedDistrict}
             handleDistrictSelection={handleDistrictSelection}
