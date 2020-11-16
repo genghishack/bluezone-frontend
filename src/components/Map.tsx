@@ -1,6 +1,6 @@
 import React, { Component, createRef, useCallback, useEffect, useState } from 'react';
 import { connect } from "react-redux";
-import ReactMapGl, { NavigationControl } from 'react-map-gl';
+import ReactMapGl, { MapLoadEvent, NavigationControl } from 'react-map-gl';
 import geoViewport from "@mapbox/geo-viewport/index";
 import InfoBox from './InfoBox/InfoBox';
 import MenuTree from './MenuTree/MenuTree';
@@ -12,6 +12,8 @@ import Config from '../config';
 interface IMapProps {
   map: any;
   setMap: Function;
+  handleMapLoad: (event: MapLoadEvent) => void;
+  mapLoaded: boolean;
   selectedState: string;
   selectedDistrict: string;
   handleDistrictSelection: Function;
@@ -42,7 +44,6 @@ export class Map extends Component<IMapProps, {}> {
       bearing: 0,
       pitch: 0
     },
-    mapLoaded: false,
     expanded: false,
     district: {},
   };
@@ -54,14 +55,12 @@ export class Map extends Component<IMapProps, {}> {
     }
   };
 
-  setMapLoaded = (bool: boolean) => {
-    this.setState({mapLoaded: bool});
-  }
-
   onMapLoad = () => {
     //@ts-ignore
-    this.props.setMap(this.mapRef.getMap());
-    onMapFullRender(this.props.map, this.setMapLoaded);
+    this.props.handleMapLoad(this.mapRef);
+    //@ts-ignore
+    // this.props.setMap(this.mapRef.getMap());
+    // onMapFullRender(this.props.map, setMapLoaded);
     // @ts-ignore
     // this.setState({map: this.mapRef.getMap()}, () => {
     //   onMapFullRender(this.props.map, this.setMapLoaded);
@@ -103,7 +102,7 @@ export class Map extends Component<IMapProps, {}> {
     /*
     TODO: the mouse is no longer being changed with the new map.
      */
-    const { mapLoaded } = this.state;
+    const { mapLoaded } = this.props;
 
     if (mapLoaded) {
       // @ts-ignore
@@ -277,8 +276,8 @@ export class Map extends Component<IMapProps, {}> {
   };
 
   render() {
-    const { handleDistrictSelection, setMap } = this.props;
-    const { viewport, mapLoaded } = this.state;
+    const { handleDistrictSelection, handleMapLoad, mapLoaded } = this.props;
+    const { viewport } = this.state;
 
     console.log('mapProps: ', this.props)
     const congressionalDistricts = mapLoaded ? (
@@ -324,7 +323,7 @@ export class Map extends Component<IMapProps, {}> {
           </div>
         </ReactMapGl>
       </div>
-    )
+    );
   }
 }
 

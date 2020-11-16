@@ -19,15 +19,18 @@ const CongressMap = (props: ICongressMapProps) => {
         setSelectedDistrict(districtNum);
     };
 
-    const onMapLoad: (event: MapLoadEvent) => void = (mapRef) => {
+    const handleMapLoad = (mapRef) => {
         // @ts-ignore
         setMap(mapRef.getMap());
+        onMapFullRender(map, setMapLoaded);
     };
 
     return (
         <Map
             map={map}
             setMap={setMap}
+            handleMapLoad={handleMapLoad}
+            mapLoaded={mapLoaded}
             selectedState={selectedState}
             selectedDistrict={selectedDistrict}
             handleDistrictSelection={handleDistrictSelection}
