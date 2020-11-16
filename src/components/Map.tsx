@@ -1,4 +1,4 @@
-import React, { Component, createRef, useCallback, useEffect, useState } from 'react';
+import React, { Component, createRef } from 'react';
 import { connect } from "react-redux";
 import ReactMapGl, { MapLoadEvent, NavigationControl } from 'react-map-gl';
 import geoViewport from "@mapbox/geo-viewport/index";
@@ -7,6 +7,7 @@ import MenuTree from './MenuTree/MenuTree';
 import CongressionalDistricts from './Layers/CongressionalDistricts';
 import { ensureMapFullRender } from '../utils/MapHelpers';
 
+import { continentalBbox, continentalViewport } from '../constants';
 import Config from '../config';
 
 interface IMapProps {
@@ -24,14 +25,6 @@ interface IMapProps {
   currentType?: string;
 }
 
-// Use GeoViewport and the window size to determine an
-// appropriate center and zoom for the continental US
-const continentalBbox = [-128.8, 23.6, -65.4, 50.2];
-const continentalView = (w, h) => {
-  return geoViewport.viewport(continentalBbox, [w, h]);
-};
-const continental = continentalView(window.innerWidth / 2, window.innerHeight / 2);
-
 const mapConf = Config.mapbox;
 
 export class Map extends Component<IMapProps, {}> {
@@ -39,13 +32,7 @@ export class Map extends Component<IMapProps, {}> {
   hoveredDistrictId = null; // this is not in state because it doesn't un-hover the districts when it is
 
   state = {
-    viewport: {
-      longitude: continental.center[0],
-      latitude: continental.center[1],
-      zoom: continental.zoom,
-      bearing: 0,
-      pitch: 0
-    },
+    viewport: continentalViewport,
     expanded: false,
     district: {},
   };
