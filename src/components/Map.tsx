@@ -27,8 +27,6 @@ interface IMapProps {
   selectedState: string;
   selectedDistrict: string;
   handleDistrictSelection: Function;
-  currentEntity?: string;
-  currentType?: string;
 }
 
 const mapConf = Config.mapbox;
@@ -165,11 +163,4 @@ export class Map extends Component<IMapProps, {}> {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    currentId: state.entities.currentEntity,
-    currentType: state.entities.currentType,
-  };
-}
-
-export default connect(mapStateToProps)(Map);
+export default Map;
