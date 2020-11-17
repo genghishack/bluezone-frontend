@@ -116,14 +116,6 @@ export class Map extends Component<IMapProps, {}> {
 
   };
 
-  handleCloseClick = () => {
-    /*
-     TODO: There's a bug in this which makes whatever district
-      is underneath the X become selected when the X is clicked.
-    */
-    this.props.setExpanded(false);
-  };
-
   render() {
     const { map, handleDistrictSelection, handleMapClick, mapLoaded, viewport, setViewport } = this.props;
 
@@ -167,7 +159,7 @@ export class Map extends Component<IMapProps, {}> {
         <InfoBox
           district={this.props.district}
           expanded={this.props.expanded}
-          closeClick={this.handleCloseClick}
+          closeClick={() => this.props.setExpanded(false)}
         />
       </div>
     );

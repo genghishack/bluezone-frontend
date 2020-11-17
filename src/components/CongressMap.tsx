@@ -142,6 +142,35 @@ const CongressMap = (props: ICongressMapProps) => {
         }
     };
 
+    // const handleMouseMove = (evt) => {
+    //     if (map && mapLoaded) {
+    //         // @ts-ignore
+    //         const features = map.queryRenderedFeatures(evt.point);
+
+    //         let cursorStyle = '';
+
+    //         // Make sure the district we are hovering is being displayed by the filter
+    //         const hoveredDistrict = features.filter(feature => {
+    //             return layerIds.indexOf(feature.layer.id) !== -1;
+    //         });
+
+    //         // console.log('hovered district: ', hoveredDistrict);
+
+    //         if (hoveredDistrict.length) {
+
+    //             // Make sure the cursor is a pointer over any visible district.
+    //             cursorStyle = 'pointer';
+
+    //             this.setHoveredDistrict(hoveredDistrict);
+
+    //         }
+
+    //         // @ts-ignore
+    //         this.props.map.getCanvas().style.cursor = cursorStyle;
+    //     }
+
+    // };
+
     return (
         <Map
             map={map}
