@@ -23,8 +23,6 @@ interface IMapProps {
   selectedState: string;
   selectedDistrict: string;
   handleDistrictSelection: Function;
-  hoveredDistrictId: string | null;
-  setHoveredDistrictId: Function;
 }
 
 const mapConf = Config.mapbox;
@@ -61,12 +59,6 @@ export class Map extends Component<IMapProps, {}> {
     console.log('mapProps: ', this.props)
 
     return (
-      <div id="main-container">
-
-        <MenuTree
-          handleSelection={handleDistrictSelection}
-        />
-
         <ReactMapGl
           ref={map => {
             // @ts-ignore
@@ -95,12 +87,6 @@ export class Map extends Component<IMapProps, {}> {
             />
           </div>
         </ReactMapGl>
-        <InfoBox
-          district={this.props.district}
-          expanded={this.props.expanded}
-          closeClick={() => this.props.setExpanded(false)}
-        />
-      </div>
     );
   }
 }

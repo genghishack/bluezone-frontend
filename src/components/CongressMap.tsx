@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import geoViewport from "@mapbox/geo-viewport/index";
 import { continentalBbox, continentalViewport, layerIds } from '../constants';
 import Map from './Map';
+import MenuTree from './MenuTree/MenuTree';
+import InfoBox from './InfoBox/InfoBox';
 
 interface ICongressMapProps {
     bboxes?: any;
@@ -199,25 +201,35 @@ const CongressMap = (props: ICongressMapProps) => {
     };
 
     return (
-        <Map
-            map={map}
-            viewport={viewport}
-            setViewport={setViewport}
-            handleMapLoad={handleMapLoad}
-            handleMapClick={handleMapClick}
-            handleMouseMove={handleMouseMove}
-            mapLoaded={mapLoaded}
-            setMapLoaded={setMapLoaded}
-            filterMap={filterMap}
-            expanded={expanded}
-            setExpanded={setExpanded}
-            district={district}
-            selectedState={selectedState}
-            selectedDistrict={selectedDistrict}
-            handleDistrictSelection={handleDistrictSelection}
-            hoveredDistrictId={hoveredDistrictId}
-            setHoveredDistrictId={setHoveredDistrictId}
-        />
+        <div id="main-container">
+            <MenuTree
+                handleSelection={handleDistrictSelection}
+            />
+
+            <Map
+                map={map}
+                viewport={viewport}
+                setViewport={setViewport}
+                handleMapLoad={handleMapLoad}
+                handleMapClick={handleMapClick}
+                handleMouseMove={handleMouseMove}
+                mapLoaded={mapLoaded}
+                setMapLoaded={setMapLoaded}
+                filterMap={filterMap}
+                expanded={expanded}
+                setExpanded={setExpanded}
+                district={district}
+                selectedState={selectedState}
+                selectedDistrict={selectedDistrict}
+                handleDistrictSelection={handleDistrictSelection}
+            />
+
+            <InfoBox
+                district={district}
+                expanded={expanded}
+                closeClick={() => setExpanded(false)}
+            />
+        </div>
     );
 }
 
