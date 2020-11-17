@@ -174,20 +174,16 @@ const CongressMap = (props: ICongressMapProps) => {
     return (
         <Map
             map={map}
-            setMap={setMap}
             viewport={viewport}
             setViewport={setViewport}
             handleMapLoad={handleMapLoad}
             handleMapClick={handleMapClick}
             mapLoaded={mapLoaded}
             setMapLoaded={setMapLoaded}
-            focusMap={focusMap}
             filterMap={filterMap}
-            filterDataset={filterDataset}
             expanded={expanded}
             setExpanded={setExpanded}
             district={district}
-            setDistrict={setDistrict}
             selectedState={selectedState}
             selectedDistrict={selectedDistrict}
             handleDistrictSelection={handleDistrictSelection}

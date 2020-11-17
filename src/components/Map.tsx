@@ -1,5 +1,4 @@
 import React, { Component, createRef } from 'react';
-import { connect } from "react-redux";
 import ReactMapGl, { MapLoadEvent, NavigationControl, ViewportChangeHandler } from 'react-map-gl';
 import InfoBox from './InfoBox/InfoBox';
 import MenuTree from './MenuTree/MenuTree';
@@ -10,20 +9,16 @@ import Config from '../config';
 
 interface IMapProps {
   map: any;
-  setMap: Function;
   viewport: any;
   setViewport: ViewportChangeHandler;
   handleMapLoad: (event: MapLoadEvent) => void;
   handleMapClick: Function;
   mapLoaded: boolean;
   setMapLoaded: Function;
-  focusMap: Function;
   filterMap: Function;
-  filterDataset: Function;
   expanded: boolean;
   setExpanded: Function;
   district: any;
-  setDistrict: Function;
   selectedState: string;
   selectedDistrict: string;
   handleDistrictSelection: Function;
