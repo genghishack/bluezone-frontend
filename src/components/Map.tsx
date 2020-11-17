@@ -1,7 +1,5 @@
 import React, { Component, createRef } from 'react';
 import ReactMapGl, { MapLoadEvent, NavigationControl, ViewportChangeHandler } from 'react-map-gl';
-import InfoBox from './InfoBox/InfoBox';
-import MenuTree from './MenuTree/MenuTree';
 import CongressionalDistricts from './Layers/CongressionalDistricts';
 import { ensureMapFullRender } from '../utils/MapHelpers';
 
@@ -17,12 +15,8 @@ interface IMapProps {
   mapLoaded: boolean;
   setMapLoaded: Function;
   filterMap: Function;
-  expanded: boolean;
-  setExpanded: Function;
-  district: any;
   selectedState: string;
   selectedDistrict: string;
-  handleDistrictSelection: Function;
 }
 
 const mapConf = Config.mapbox;
@@ -48,7 +42,6 @@ export class Map extends Component<IMapProps, {}> {
   render() {
     const { 
       map, 
-      handleDistrictSelection, 
       handleMapClick, 
       handleMouseMove, 
       mapLoaded, 
