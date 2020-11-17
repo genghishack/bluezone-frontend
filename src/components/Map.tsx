@@ -13,6 +13,7 @@ interface IMapProps {
   setViewport: ViewportChangeHandler;
   handleMapLoad: (event: MapLoadEvent) => void;
   handleMapClick: Function;
+  handleMouseMove: Function;
   mapLoaded: boolean;
   setMapLoaded: Function;
   filterMap: Function;
@@ -22,13 +23,14 @@ interface IMapProps {
   selectedState: string;
   selectedDistrict: string;
   handleDistrictSelection: Function;
+  hoveredDistrictId: string | null;
+  setHoveredDistrictId: Function;
 }
 
 const mapConf = Config.mapbox;
 
 export class Map extends Component<IMapProps, {}> {
   mapRef = createRef(); // this is not in state because it creates an infinite loop when trying to use it to set a ref from the instance when it is
-  hoveredDistrictId = null; // this is not in state because it doesn't un-hover the districts when it is
 
   componentDidUpdate = (prevProps) => {
     if (prevProps.selectedState !== this.props.selectedState
@@ -45,71 +47,16 @@ export class Map extends Component<IMapProps, {}> {
     ensureMapFullRender(map, setMapLoaded);
   };
 
-  setHoveredDistrict(district) {
-    // remove the hover setting from whatever district was being hovered before
-    if (this.hoveredDistrictId) {
-      // @ts-ignore
-      this.props.map.setFeatureState({
-        source: 'districts2018',
-        sourceLayer: 'districts',
-        id: this.hoveredDistrictId
-      }, {
-        hover: false
-      });
-    }
-
-    // Change the hovered district id to the current one
-    this.hoveredDistrictId = district[0].id;
-
-    // Set hover to true on the currently hovered district
-    // @ts-ignore
-    this.props.map.setFeatureState({
-      source: 'districts2018',
-      sourceLayer: 'districts',
-      id: this.hoveredDistrictId
-    }, {
-      hover: true
-    });
-  }
-
-  handleMouseMove = (evt) => {
-    /*
-    TODO: the mouse is no longer being changed with the new map.
-     */
-    const { mapLoaded } = this.props;
-
-    if (mapLoaded) {
-      // @ts-ignore
-      const features = this.props.map.queryRenderedFeatures(evt.point);
-
-      let cursorStyle = '';
-
-      const { layerIds } = mapConf;
-
-      // Make sure the district we are hovering is being displayed by the filter
-      const hoveredDistrict = features.filter(feature => {
-        return layerIds.indexOf(feature.layer.id) !== -1;
-      });
-
-      // console.log('hovered district: ', hoveredDistrict);
-
-      if (hoveredDistrict.length) {
-
-        // Make sure the cursor is a pointer over any visible district.
-        cursorStyle = 'pointer';
-
-        this.setHoveredDistrict(hoveredDistrict);
-
-      }
-
-      // @ts-ignore
-      this.props.map.getCanvas().style.cursor = cursorStyle;
-    }
-
-  };
-
   render() {
-    const { map, handleDistrictSelection, handleMapClick, mapLoaded, viewport, setViewport } = this.props;
+    const { 
+      map, 
+      handleDistrictSelection, 
+      handleMapClick, 
+      handleMouseMove, 
+      mapLoaded, 
+      viewport, 
+      setViewport 
+    } = this.props;
 
     console.log('mapProps: ', this.props)
 
@@ -132,7 +79,7 @@ export class Map extends Component<IMapProps, {}> {
           mapboxApiAccessToken={mapConf.accessToken}
           onViewportChange={setViewport}
           onLoad={this.onMapLoad}
-          onMouseMove={this.handleMouseMove}
+          onMouseMove={handleMouseMove}
           onClick={handleMapClick}
         >
 

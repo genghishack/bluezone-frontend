@@ -19,6 +19,7 @@ const CongressMap = (props: ICongressMapProps) => {
     const [district, setDistrict] = useState({});
     const [selectedState, setSelectedState] = useState('');
     const [selectedDistrict, setSelectedDistrict] = useState('');
+    const [hoveredDistrictId, setHoveredDistrictId] = useState(null);
 
     const handleDistrictSelection = (stateAbbr: string, districtNum: string = '') => {
         setSelectedState(stateAbbr);
@@ -142,34 +143,60 @@ const CongressMap = (props: ICongressMapProps) => {
         }
     };
 
-    // const handleMouseMove = (evt) => {
-    //     if (map && mapLoaded) {
-    //         // @ts-ignore
-    //         const features = map.queryRenderedFeatures(evt.point);
+    const setHoveredDistrict = (district) => {
+        // remove the hover setting from whatever district was being hovered before
+        if (hoveredDistrictId) {
+            // @ts-ignore
+            map.setFeatureState({
+                source: 'districts2018',
+                sourceLayer: 'districts',
+                id: hoveredDistrictId
+            }, {
+                hover: false
+            });
+        }
 
-    //         let cursorStyle = '';
+        // Change the hovered district id to the current one
+        setHoveredDistrictId(district[0].id);
 
-    //         // Make sure the district we are hovering is being displayed by the filter
-    //         const hoveredDistrict = features.filter(feature => {
-    //             return layerIds.indexOf(feature.layer.id) !== -1;
-    //         });
+        // Set hover to true on the currently hovered district
+        // @ts-ignore
+        map.setFeatureState({
+            source: 'districts2018',
+            sourceLayer: 'districts',
+            id: hoveredDistrictId
+        }, {
+            hover: true
+        });
+    }
 
-    //         // console.log('hovered district: ', hoveredDistrict);
+    const handleMouseMove = (evt) => {
+        if (map && mapLoaded) {
+            // @ts-ignore
+            const features = map.queryRenderedFeatures(evt.point);
 
-    //         if (hoveredDistrict.length) {
+            let cursorStyle = '';
 
-    //             // Make sure the cursor is a pointer over any visible district.
-    //             cursorStyle = 'pointer';
+            // Make sure the district we are hovering is being displayed by the filter
+            const hoveredDistrict = features.filter(feature => {
+                return layerIds.indexOf(feature.layer.id) !== -1;
+            });
 
-    //             this.setHoveredDistrict(hoveredDistrict);
+            // console.log('hovered district: ', hoveredDistrict);
 
-    //         }
+            if (hoveredDistrict.length) {
 
-    //         // @ts-ignore
-    //         this.props.map.getCanvas().style.cursor = cursorStyle;
-    //     }
+                // Make sure the cursor is a pointer over any visible district.
+                cursorStyle = 'pointer';
 
-    // };
+                setHoveredDistrict(hoveredDistrict);
+
+            }
+
+            // @ts-ignore
+            map.getCanvas().style.cursor = cursorStyle;
+        }
+    };
 
     return (
         <Map
@@ -178,6 +205,7 @@ const CongressMap = (props: ICongressMapProps) => {
             setViewport={setViewport}
             handleMapLoad={handleMapLoad}
             handleMapClick={handleMapClick}
+            handleMouseMove={handleMouseMove}
             mapLoaded={mapLoaded}
             setMapLoaded={setMapLoaded}
             filterMap={filterMap}
@@ -187,6 +215,8 @@ const CongressMap = (props: ICongressMapProps) => {
             selectedState={selectedState}
             selectedDistrict={selectedDistrict}
             handleDistrictSelection={handleDistrictSelection}
+            hoveredDistrictId={hoveredDistrictId}
+            setHoveredDistrictId={setHoveredDistrictId}
         />
     );
 }
