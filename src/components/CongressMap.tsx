@@ -216,12 +216,8 @@ const CongressMap = (props: ICongressMapProps) => {
                 mapLoaded={mapLoaded}
                 setMapLoaded={setMapLoaded}
                 filterMap={filterMap}
-                expanded={expanded}
-                setExpanded={setExpanded}
-                district={district}
                 selectedState={selectedState}
                 selectedDistrict={selectedDistrict}
-                handleDistrictSelection={handleDistrictSelection}
             />
 
             <InfoBox
