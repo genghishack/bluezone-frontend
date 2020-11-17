@@ -27,7 +27,6 @@ interface IMapProps {
   selectedState: string;
   selectedDistrict: string;
   handleDistrictSelection: Function;
-  bboxes?: any;
   currentEntity?: string;
   currentType?: string;
 }
@@ -168,7 +167,6 @@ export class Map extends Component<IMapProps, {}> {
 
 function mapStateToProps(state) {
   return {
-    bboxes: state.states.bboxes,
     currentId: state.entities.currentEntity,
     currentType: state.entities.currentType,
   };
