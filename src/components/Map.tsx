@@ -49,7 +49,7 @@ export class Map extends Component<IMapProps, {}> {
       setViewport 
     } = this.props;
 
-    console.log('mapProps: ', this.props)
+    // console.log('mapProps: ', this.props)
 
     return (
         <ReactMapGl

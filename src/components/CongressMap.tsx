@@ -156,17 +156,7 @@ const CongressMap = (props: ICongressMapProps) => {
     };
 
     useEffect(() => {
-
-    }, [hoveredDistrictId]);
-
-    const setHoveredDistrict = (district) => {
-        // Change the hovered district id to the current one
-        setHoveredDistrictId(district[0].id);
-
-        if (prevHoveredDistrictId !== hoveredDistrictId) {
-            // console.log('previous: ', prevHoveredDistrictId);
-            // console.log('current: ', hoveredDistrictId);
-
+        if (map) {
             // remove the hover setting from whatever district was being hovered before
             if (prevHoveredDistrictId) {
                 // @ts-ignore
@@ -189,8 +179,7 @@ const CongressMap = (props: ICongressMapProps) => {
                 hover: true
             });
         }
-
-    }
+    }, [map, prevHoveredDistrictId, hoveredDistrictId]);
 
     const handleMouseMove = (evt) => {
         if (map && mapLoaded) {
@@ -204,15 +193,11 @@ const CongressMap = (props: ICongressMapProps) => {
                 return layerIds.indexOf(feature.layer.id) !== -1;
             });
 
-            // console.log('hovered district: ', hoveredDistrict);
-
             if (hoveredDistrict.length) {
-
                 // Make sure the cursor is a pointer over any visible district.
                 cursorStyle = 'pointer';
-
-                setHoveredDistrict(hoveredDistrict);
-
+                // set the hovered district id
+                setHoveredDistrictId(hoveredDistrict[0].id);
             }
 
             //TODO: Fix this - it's not changing the cursor
