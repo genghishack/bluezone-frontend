@@ -1,4 +1,4 @@
-import React, {Component, useEffect, useLayoutEffect, useState} from 'react';
+import React, {useLayoutEffect} from 'react';
 import {connect} from "react-redux";
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
@@ -96,82 +96,6 @@ const App = (props: IAppProps) => {
   )
 }
 
-class App1 extends Component<IAppProps, {}> {
-  componentDidMount = () => {
-    fetch(`${apiConfig.URL}/public/state/districts`)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.props.dispatch(setDistrictsByState(result.data));
-        },
-        (error) => {
-          this.props.dispatch(setError(error));
-        }
-      );
-    fetch(`${apiConfig.URL}/public/state/bboxes`)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.props.dispatch(setBBoxes(result.data));
-        },
-        (error) => {
-          this.props.dispatch(setError(error));
-        }
-      )
-    fetch(`${apiConfig.URL}/public/state`)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.props.dispatch(setStates(result.data));
-        },
-        (error) => {
-          this.props.dispatch(setError(error));
-        }
-      )
-    fetch(`${apiConfig.URL}/public/legislator`)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.props.dispatch(setLegislators(result.data));
-          this.props.dispatch(setLegislatorsByState(getLegislatorsByState(JSON.parse(JSON.stringify(result.data)))));
-        },
-        (error) => {
-          this.props.dispatch(setError(error));
-        }
-      )
-  };
-
-  handleYearSelection = (year) => {
-    fetch(`${apiConfig.URL}/public/legislator?date=${year}`)
-      .then(res => res.json())
-      .then(
-        (result) => {
-          this.props.dispatch(setLegislators(result.data));
-          this.props.dispatch(setLegislatorsByState(getLegislatorsByState(JSON.parse(JSON.stringify(result.data)))));
-        },
-        (error) => {
-          this.props.dispatch(setError(error));
-        }
-      )
-  };
-
-  render = () => {
-    return (
-      <div className="App">
-        <Header
-          handleYearSelection={this.handleYearSelection}
-        />
-        <Router>
-          <Switch>
-            <Route path="/" component={CongressMap}/>
-          </Switch>
-        </Router>
-      </div>
-    )
-  };
-
-}
-
 function mapStateToProps(state: { errors: any; states: { districtsByState: any; states: any; }; legislators: { legislators: any; legislatorsByState: any; }; }) {
   return {
     errors: state.errors,
@@ -182,4 +106,4 @@ function mapStateToProps(state: { errors: any; states: { districtsByState: any; 
   };
 }
 
-export default connect(mapStateToProps)(App1);
+export default connect(mapStateToProps)(App);
