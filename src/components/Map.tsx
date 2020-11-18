@@ -1,6 +1,6 @@
-import React, { Component, createRef } from 'react';
-import ReactMapGl, { MapLoadEvent, NavigationControl, ViewportChangeHandler } from 'react-map-gl';
-import { ensureMapFullyLoaded as ensureMapFullyLoaded } from '../utils/MapHelpers';
+import React, { Component } from 'react';
+import ReactMapGl, { NavigationControl, ViewportChangeHandler } from 'react-map-gl';
+import { ensureMapFullyLoaded } from '../utils/MapHelpers';
 
 import Config from '../config';
 
