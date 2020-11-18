@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import geoViewport from "@mapbox/geo-viewport/index";
 import { continentalBbox, continentalViewport, layerIds } from '../constants';
@@ -22,6 +22,16 @@ const CongressMap = (props: ICongressMapProps) => {
     const [selectedState, setSelectedState] = useState('');
     const [selectedDistrict, setSelectedDistrict] = useState('');
     const [hoveredDistrictId, setHoveredDistrictId] = useState(null);
+
+    const usePrevious = (value) => {
+        const ref = useRef();
+        useEffect(() => {
+            ref.current = value;
+        });
+        return ref.current;
+    }
+
+    const prevHoveredDistrictId = usePrevious(hoveredDistrictId);
 
     const handleDistrictSelection = (stateAbbr: string, districtNum: string = '') => {
         setSelectedState(stateAbbr);
@@ -145,31 +155,41 @@ const CongressMap = (props: ICongressMapProps) => {
         }
     };
 
+    useEffect(() => {
+
+    }, [hoveredDistrictId]);
+
     const setHoveredDistrict = (district) => {
-        // remove the hover setting from whatever district was being hovered before
-        if (hoveredDistrictId) {
+        // Change the hovered district id to the current one
+        setHoveredDistrictId(district[0].id);
+
+        if (prevHoveredDistrictId !== hoveredDistrictId) {
+            // console.log('previous: ', prevHoveredDistrictId);
+            // console.log('current: ', hoveredDistrictId);
+
+            // remove the hover setting from whatever district was being hovered before
+            if (prevHoveredDistrictId) {
+                // @ts-ignore
+                map.setFeatureState({
+                    source: 'districts2018',
+                    sourceLayer: 'districts',
+                    id: prevHoveredDistrictId
+                }, {
+                    hover: false
+                });
+            }
+
+            // Set hover to true on the currently hovered district
             // @ts-ignore
             map.setFeatureState({
                 source: 'districts2018',
                 sourceLayer: 'districts',
                 id: hoveredDistrictId
             }, {
-                hover: false
+                hover: true
             });
         }
 
-        // Change the hovered district id to the current one
-        setHoveredDistrictId(district[0].id);
-
-        // Set hover to true on the currently hovered district
-        // @ts-ignore
-        map.setFeatureState({
-            source: 'districts2018',
-            sourceLayer: 'districts',
-            id: hoveredDistrictId
-        }, {
-            hover: true
-        });
     }
 
     const handleMouseMove = (evt) => {
@@ -195,6 +215,7 @@ const CongressMap = (props: ICongressMapProps) => {
 
             }
 
+            //TODO: Fix this - it's not changing the cursor
             // @ts-ignore
             map.getCanvas().style.cursor = cursorStyle;
         }
