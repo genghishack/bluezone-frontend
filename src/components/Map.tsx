@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ReactMapGl, { NavigationControl, ViewportChangeHandler } from 'react-map-gl';
 import { ensureMapFullyLoaded } from '../utils/MapHelpers';
 
@@ -16,44 +16,35 @@ interface IMapProps {
 
 const mapConf = Config.mapbox;
 
-export class Map extends Component<IMapProps, {}> {
-  onMapLoad = () => {
-    const { map, setMapLoaded } = this.props;
+const Map = (props: IMapProps) => {
+  const { map, setMap, setMapLoaded, viewport, setViewport, handleMapClick, handleMouseMove } = props;
+
+  const onMapLoad = () => {
     ensureMapFullyLoaded(map, setMapLoaded);
   };
 
-  render() {
-    const { 
-      setMap,
-      handleMapClick, 
-      handleMouseMove, 
-      viewport, 
-      setViewport 
-    } = this.props;
-
-    return (
-        <ReactMapGl
-          ref={mapRef => {
-            setMap(mapRef?.getMap);
-          }}
-          {...viewport}
-          width="100%"
-          height="100%"
-          mapStyle={mapConf.style}
-          mapboxApiAccessToken={mapConf.accessToken}
+  return (
+    <ReactMapGl
+      ref={mapRef => {
+        setMap(mapRef?.getMap);
+      }}
+      {...viewport}
+      width="100%"
+      height="100%"
+      mapStyle={mapConf.style}
+      mapboxApiAccessToken={mapConf.accessToken}
+      onViewportChange={setViewport}
+      onLoad={onMapLoad}
+      onMouseMove={handleMouseMove}
+      onClick={handleMapClick}
+    >
+      <div style={{ position: 'absolute', right: 10, top: 10 }}>
+        <NavigationControl
           onViewportChange={setViewport}
-          onLoad={this.onMapLoad}
-          onMouseMove={handleMouseMove}
-          onClick={handleMapClick}
-        >
-          <div style={{ position: 'absolute', right: 10, top: 10 }}>
-            <NavigationControl
-              onViewportChange={setViewport}
-            />
-          </div>
-        </ReactMapGl>
-    );
-  }
+        />
+      </div>
+    </ReactMapGl>
+  );
 }
 
 export default Map;
