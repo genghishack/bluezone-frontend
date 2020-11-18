@@ -251,30 +251,32 @@ const CongressMap = (props: ICongressMapProps) => {
         setMap(mapRef.getMap());
     };
 
-    const filterDataset = () => {
-        // @ts-ignore
-        let existingFilter = map.getFilter('districts_hover');
+    const filterDataset = useCallback(() => {
+        if (map) {
+            // @ts-ignore
+            let existingFilter = map.getFilter('districts_hover');
 
-        if (existingFilter[0] === 'all') {
-            existingFilter = existingFilter[existingFilter.length - 1];
+            if (existingFilter[0] === 'all') {
+                existingFilter = existingFilter[existingFilter.length - 1];
+            }
+            const filter = ['all'];
+            // @ts-ignore
+            if (selectedState) filter.push(['==', 'state', selectedState]);
+            // @ts-ignore
+            if (selectedDistrict) filter.push(['==', 'number', selectedDistrict]);
+
+            const layerFilter = filter.concat([existingFilter]);
+
+            // @ts-ignore
+            map.setFilter('districts_hover', layerFilter);
+            // @ts-ignore
+            map.setFilter('districts_boundary', layerFilter);
+            // @ts-ignore
+            map.setFilter('districts_label', layerFilter);
+            // @ts-ignore
+            map.setFilter('districts_fill', layerFilter);
         }
-        const filter = ['all'];
-        // @ts-ignore
-        if (selectedState) filter.push(['==', 'state', selectedState]);
-        // @ts-ignore
-        if (selectedDistrict) filter.push(['==', 'number', selectedDistrict]);
-
-        const layerFilter = filter.concat([existingFilter]);
-
-        // @ts-ignore
-        map.setFilter('districts_hover', layerFilter);
-        // @ts-ignore
-        map.setFilter('districts_boundary', layerFilter);
-        // @ts-ignore
-        map.setFilter('districts_label', layerFilter);
-        // @ts-ignore
-        map.setFilter('districts_fill', layerFilter);
-    };
+    }, [map, selectedState, selectedDistrict]);
 
     const filterUnderlyingStyle = () => {
         for (var i = 1; i <= 5; i++) {
@@ -299,7 +301,7 @@ const CongressMap = (props: ICongressMapProps) => {
         }
     };
 
-    const focusMap = (stateAbbr, districtNum) => {
+    const focusMap = useCallback((stateAbbr, districtNum) => {
         if (map) {
             let bbox = continentalBbox;
             if (stateAbbr) {
@@ -313,13 +315,19 @@ const CongressMap = (props: ICongressMapProps) => {
             // @ts-ignore
             map.easeTo(view);
         }
-    };
+    }, [bboxes, map]);
 
-    const filterMap = () => {
-        // this.filterUnderlyingStyle();
-        filterDataset();
-        focusMap(selectedState, selectedDistrict);
-    };
+    const filterMap = useCallback(() => {
+        if (map && (selectedState || selectedDistrict)) {
+            // this.filterUnderlyingStyle();
+            filterDataset();
+            focusMap(selectedState, selectedDistrict);
+        }
+    }, [map, filterDataset, focusMap, selectedState, selectedDistrict]);
+
+    useEffect(() => {
+        filterMap();
+    }, [filterMap, selectedState, selectedDistrict]);
 
     const handleMapClick = (evt) => {
         if (map) {
@@ -403,9 +411,6 @@ const CongressMap = (props: ICongressMapProps) => {
                 handleMouseMove={handleMouseMove}
                 mapLoaded={mapLoaded}
                 setMapLoaded={setMapLoaded}
-                filterMap={filterMap}
-                selectedState={selectedState}
-                selectedDistrict={selectedDistrict}
             />
 
             <InfoBox

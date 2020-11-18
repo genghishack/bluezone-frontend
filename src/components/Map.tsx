@@ -1,6 +1,5 @@
 import React, { Component, createRef } from 'react';
 import ReactMapGl, { MapLoadEvent, NavigationControl, ViewportChangeHandler } from 'react-map-gl';
-import CongressionalDistricts from './Layers/CongressionalDistricts';
 import { ensureMapFullRender } from '../utils/MapHelpers';
 
 import Config from '../config';
@@ -14,22 +13,12 @@ interface IMapProps {
   handleMouseMove: Function;
   mapLoaded: boolean;
   setMapLoaded: Function;
-  filterMap: Function;
-  selectedState: string;
-  selectedDistrict: string;
 }
 
 const mapConf = Config.mapbox;
 
 export class Map extends Component<IMapProps, {}> {
   mapRef = createRef(); // this is not in state because it creates an infinite loop when trying to use it to set a ref from the instance when it is
-
-  componentDidUpdate = (prevProps) => {
-    if (prevProps.selectedState !== this.props.selectedState
-      || prevProps.selectedDistrict !== this.props.selectedDistrict) {
-      this.props.filterMap();
-    }
-  };
 
   onMapLoad = () => {
     //@ts-ignore
