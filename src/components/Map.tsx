@@ -41,10 +41,8 @@ export class Map extends Component<IMapProps, {}> {
 
   render() {
     const { 
-      map, 
       handleMapClick, 
       handleMouseMove, 
-      mapLoaded, 
       viewport, 
       setViewport 
     } = this.props;
@@ -67,13 +65,6 @@ export class Map extends Component<IMapProps, {}> {
           onMouseMove={handleMouseMove}
           onClick={handleMapClick}
         >
-
-          {mapLoaded ? (
-            <CongressionalDistricts
-              map={map}
-            />
-          ) : null}
-
           <div style={{ position: 'absolute', right: 10, top: 10 }}>
             <NavigationControl
               onViewportChange={setViewport}
