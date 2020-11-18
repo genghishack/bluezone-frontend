@@ -35,7 +35,7 @@ const CongressMap = (props: ICongressMapProps) => {
     const prevHoveredDistrictId = usePrevious(hoveredDistrictId);
 
     useEffect(() => {
-        if (map) {
+        if (map && mapLoaded) {
             // remove the hover setting from whatever district was being hovered before
             if (prevHoveredDistrictId) {
                 // @ts-ignore
@@ -58,7 +58,7 @@ const CongressMap = (props: ICongressMapProps) => {
                 hover: true
             });
         }
-    }, [map, prevHoveredDistrictId, hoveredDistrictId]);
+    }, [map, mapLoaded, prevHoveredDistrictId, hoveredDistrictId]);
 
     const addDistrictSource = useCallback(() => {
         if (map && mapLoaded) {
@@ -246,11 +246,6 @@ const CongressMap = (props: ICongressMapProps) => {
         setSelectedDistrict(districtNum);
     };
 
-    const handleMapLoad = (mapRef) => {
-        // @ts-ignore
-        setMap(mapRef.getMap());
-    };
-
     const filterDataset = useCallback(() => {
         if (map) {
             // @ts-ignore
@@ -404,13 +399,12 @@ const CongressMap = (props: ICongressMapProps) => {
 
             <Map
                 map={map}
+                setMap={setMap}
+                setMapLoaded={setMapLoaded}
                 viewport={viewport}
                 setViewport={setViewport}
-                handleMapLoad={handleMapLoad}
                 handleMapClick={handleMapClick}
                 handleMouseMove={handleMouseMove}
-                mapLoaded={mapLoaded}
-                setMapLoaded={setMapLoaded}
             />
 
             <InfoBox

@@ -1,48 +1,40 @@
 import React, { Component, createRef } from 'react';
 import ReactMapGl, { MapLoadEvent, NavigationControl, ViewportChangeHandler } from 'react-map-gl';
-import { ensureMapFullRender } from '../utils/MapHelpers';
+import { ensureMapFullyLoaded as ensureMapFullyLoaded } from '../utils/MapHelpers';
 
 import Config from '../config';
 
 interface IMapProps {
   map: any;
+  setMap: Function;
+  setMapLoaded: Function;
   viewport: any;
   setViewport: ViewportChangeHandler;
-  handleMapLoad: (event: MapLoadEvent) => void;
   handleMapClick: Function;
   handleMouseMove: Function;
-  mapLoaded: boolean;
-  setMapLoaded: Function;
 }
 
 const mapConf = Config.mapbox;
 
 export class Map extends Component<IMapProps, {}> {
-  mapRef = createRef(); // this is not in state because it creates an infinite loop when trying to use it to set a ref from the instance when it is
-
   onMapLoad = () => {
-    //@ts-ignore
-    this.props.handleMapLoad(this.mapRef); // changes value of map prop
-
     const { map, setMapLoaded } = this.props;
-    ensureMapFullRender(map, setMapLoaded);
+    ensureMapFullyLoaded(map, setMapLoaded);
   };
 
   render() {
     const { 
+      setMap,
       handleMapClick, 
       handleMouseMove, 
       viewport, 
       setViewport 
     } = this.props;
 
-    // console.log('mapProps: ', this.props)
-
     return (
         <ReactMapGl
-          ref={map => {
-            // @ts-ignore
-            this.mapRef = map;
+          ref={mapRef => {
+            setMap(mapRef?.getMap);
           }}
           {...viewport}
           width="100%"
