@@ -1,3 +1,25 @@
+type TMap = { 
+  loaded: () => any; 
+  isStyleLoaded: () => any; 
+  areTilesLoaded: () => any; 
+} | null
+
+export const ensureMapFullyLoaded = (map: TMap, setMapLoaded: Function) => {
+  if (map) {
+    // @ts-ignore
+    const mapIsLoaded = map.loaded();
+    // @ts-ignore
+    const styleIsLoaded = map.isStyleLoaded();
+    // @ts-ignore
+    const tilesAreLoaded = map.areTilesLoaded();
+    if (!mapIsLoaded || !tilesAreLoaded || !styleIsLoaded) {
+      setTimeout(ensureMapFullyLoaded, 200);
+    } else {
+      setMapLoaded(true);
+    }
+  }
+};
+
 export function createGeoJsonPolys(data) {
   const newArray = data.map((item) => {
     return {
