@@ -3,7 +3,7 @@ import {connect} from "react-redux";
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 
 import Header from './components/Header';
-import CongressMap from './components/CongressMap';
+import CongressMap from './components/CongressMap/CongressMap';
 import Config from './config';
 
 import {getLegislatorsByState} from './utils/data-index';
