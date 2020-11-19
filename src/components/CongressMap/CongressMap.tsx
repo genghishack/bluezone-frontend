@@ -6,7 +6,8 @@ import { continentalBbox, continentalViewport, layerIds } from '../../constants'
 import Map from '../Map';
 import MenuTree from '../MenuTree/MenuTree';
 import InfoBox from '../InfoBox/InfoBox';
-import { setDistrictHoverState } from './mapEffects';
+import { setDistrictFillByParty, setDistrictHoverState } from './mapEffects';
+import { addDistrictBoundaryLayer, addDistrictFillLayer, addDistrictHoverLayer, addDistrictLabelLayer, addDistrictSource } from "./mapLayers";
 
 interface ICongressMapProps {
     bboxes?: any;
@@ -44,188 +45,41 @@ const CongressMap = (props: ICongressMapProps) => {
         }
     }, [map, mapLoaded, prevHoveredDistrictId, hoveredDistrictId]);
 
-    const addDistrictSource = useCallback(() => {
-        if (map && mapLoaded) {
-            //@ts-ignore
-            if (!map.getSource('districts2018')) {
-                //@ts-ignore
-                map.addSource('districts2018', {
-                    type: 'vector',
-                    url: 'mapbox://genghishack.cd-116-2018'
-                });
-            }
-        }
-    }, [map, mapLoaded]);
+    const addLayers = useCallback(() => {
+        addDistrictSource(map!);
+        addDistrictBoundaryLayer(map!);
+        addDistrictLabelLayer(map!);
+        addDistrictHoverLayer(map!);
+    }, [map]);
 
-    const addDistrictBoundariesLayer = useCallback(() => {
+    const onMapFullLoad = useCallback(() => {
         if (map && mapLoaded) {
-            //@ts-ignore
-            map.addLayer({
-                'id': 'districts_boundary',
-                'type': 'line',
-                'source': 'districts2018',
-                'source-layer': 'districts',
-                'paint': {
-                    'line-color': 'rgba(128, 128, 128, 0.9)',
-                    'line-width': 1
-                },
-                'filter': ['all']
-            });
-        }
-    }, [map, mapLoaded]);
-
-    const addDistrictLabelsLayer = useCallback(() => {
-        if (map && mapLoaded) {
-            //@ts-ignore
-            map.addLayer({
-                'id': 'districts_label',
-                'type': 'symbol',
-                'source': 'districts2018',
-                'source-layer': 'districts',
-                'layout': {
-                    'text-field': '{title_short}',
-                    'text-font': ['Open Sans Bold', 'Arial Unicode MS Regular'],
-                    'text-size': { 'base': 1, stops: [[1, 8], [7, 18]] }
-                },
-                'paint': {
-                    'text-color': 'hsl(0, 0%, 27%)',
-                    'text-halo-color': '#decbe4',
-                    'text-halo-width': {
-                        'base': 1,
-                        'stops': [
-                            [1, 1],
-                            [8, 2]
-                        ]
-                    }
-                }
-            });
-        }
-    }, [map, mapLoaded]);
-
-    const addDistrictHoverLayer = useCallback(() => {
-        if (map && mapLoaded) {
-            //@ts-ignore
-            map.addLayer({
-                'id': 'districts_hover',
-                'type': 'fill',
-                'source': 'districts2018',
-                'source-layer': 'districts',
-                'filter': ['!=', 'fill', ''],
-                'paint': {
-                    'fill-color': [
-                        'case',
-                        ['boolean', ['feature-state', 'hover'], false],
-                        'rgba(123, 104, 238, 0.3)', // medium slate blue
-                        'rgba(0, 0, 0, 0)'
-                    ],
-                    // 'fill-opacity': [
-                    //   'case',
-                    //   ['boolean', ['feature-state', 'hover'], false],
-                    //   1,
-                    //   0.2
-                    // ],
-                    // 'fill-outline-color': 'rgba(128, 128, 128, 0.4)',
-                    'fill-antialias': true
-                }
-            });
-        }
-    }, [map, mapLoaded]);
-
-    const addDistrictFillLayer = useCallback(() => {
-        if (map && mapLoaded) {
-            // @ts-ignore
-            map.addLayer({
-                'id': 'districts_fill',
-                'type': 'fill',
-                'source': 'districts2018',
-                'source-layer': 'districts',
-                'filter': ['!=', 'fill', ''],
-                'paint': {
-                    'fill-color': [
-                        'case',
-                        ['boolean', ['feature-state', 'party'], true],
-                        '#9999ff', // dem
-                        '#ff9999' // rep
-                    ],
-                    'fill-antialias': true,
-                    'fill-opacity': 0.5
-                }
-            });
-        }
-    }, [map, mapLoaded]);
-
-    const setDistrictFillByParty = useCallback(() => {
-        if (map && mapLoaded) {
-            // @ts-ignore
-            const features = map.querySourceFeatures('districts2018', {
-                sourceLayer: 'districts',
-                // filter: ['has', 'id']
-            });
-            // console.log('features: ', features);
-
-            features.forEach(feature => {
-                //@ts-ignore
-                const stateAbbr = feature.properties.state;
-                //@ts-ignore
-                const districtNum = parseInt(feature.properties.number, 10);
-                let districtData = {};
-                if (legislatorIndex && legislatorIndex[stateAbbr]) {
-                    districtData = legislatorIndex[stateAbbr].rep[districtNum] || {};
-                }
-                // @ts-ignore
-                if (districtData.name) {
-                    // @ts-ignore
-                    const party = districtData.terms.slice(-1)[0].party;
-                    const partyBoolean = !!(party === 'Democrat');
-                    // @ts-ignore
-                    map.setFeatureState({
-                        source: 'districts2018',
-                        sourceLayer: 'districts',
-                        id: feature.id
-                    }, {
-                        party: partyBoolean
-                    });
-                }
-            });
-        }
-    }, [legislatorIndex, map, mapLoaded]);
-
-    const onMapFullRender = useCallback(() => {
-        if (map && mapLoaded) {
-            //@ts-ignore
-            const mapIsLoaded = map.loaded();
-            //@ts-ignore
-            const styleIsLoaded = map.isStyleLoaded();
-            //@ts-ignore
-            const tilesAreLoaded = map.areTilesLoaded();
-            if (!mapIsLoaded || !tilesAreLoaded || !styleIsLoaded || !legislatorIndex.AK) {
-                setTimeout(onMapFullRender, 200);
+            if (!map.loaded() || !map.isStyleLoaded() || !map.areTilesLoaded() || !legislatorIndex.AK) {
+                setTimeout(onMapFullLoad, 100);
             } else {
-                addDistrictFillLayer();
-                setDistrictFillByParty();
+                addDistrictFillLayer(map);
+                setDistrictFillByParty(map, legislatorIndex);
             }
         }
-    }, [map, mapLoaded, addDistrictFillLayer, setDistrictFillByParty, legislatorIndex.AK]);
+    }, [map, mapLoaded, legislatorIndex]);
 
     useEffect(() => {
-        addDistrictSource();
-        addDistrictBoundariesLayer();
-        addDistrictLabelsLayer();
-        addDistrictHoverLayer();
-        onMapFullRender();
+        if (map && mapLoaded) {
+            addLayers();
+            onMapFullLoad();
+        }
     }, [
         map,
         mapLoaded,
-        addDistrictSource,
-        addDistrictBoundariesLayer,
-        addDistrictLabelsLayer,
-        addDistrictHoverLayer,
-        onMapFullRender,
+        addLayers,
+        onMapFullLoad,
     ]);
 
     useEffect(() => {
-        setDistrictFillByParty();
-    }, [legislatorIndex, setDistrictFillByParty]);
+        if (map) {
+            setDistrictFillByParty(map!, legislatorIndex);
+        }
+    }, [map, legislatorIndex]);
 
     const handleDistrictSelection = (stateAbbr: string, districtNum: string = '') => {
         setSelectedState(stateAbbr);
@@ -234,7 +88,6 @@ const CongressMap = (props: ICongressMapProps) => {
 
     const filterDataset = useCallback(() => {
         if (map) {
-            // @ts-ignore
             let existingFilter = map.getFilter('districts_hover');
 
             if (existingFilter[0] === 'all') {
@@ -249,40 +102,34 @@ const CongressMap = (props: ICongressMapProps) => {
             //@ts-ignore
             const layerFilter = filter.concat([existingFilter]);
 
-            // @ts-ignore
             map.setFilter('districts_hover', layerFilter);
-            // @ts-ignore
             map.setFilter('districts_boundary', layerFilter);
-            // @ts-ignore
             map.setFilter('districts_label', layerFilter);
-            // @ts-ignore
             map.setFilter('districts_fill', layerFilter);
         }
     }, [map, selectedState, selectedDistrict]);
 
-    const filterUnderlyingStyle = () => {
-        for (var i = 1; i <= 5; i++) {
-            // @ts-ignore
-            let existingFilter = map.getFilter('districts_' + i);
-            if (existingFilter[0] === 'all') {
-                existingFilter = existingFilter[existingFilter.length - 1];
-            }
-            const filter = ['all'];
-            // @ts-ignore
-            if (selectedState) filter.push(['==', 'state', selectedState]);
-            // @ts-ignore
-            if (selectedDistrict) filter.push(['==', 'number', selectedDistrict]);
+    const filterUnderlyingStyle = useCallback(() => {
+        if (map) {
+            for (var i = 1; i <= 5; i++) {
+                let existingFilter = map.getFilter('districts_' + i);
+                if (existingFilter[0] === 'all') {
+                    existingFilter = existingFilter[existingFilter.length - 1];
+                }
+                const filter = ['all'];
+                // @ts-ignore
+                if (selectedState) filter.push(['==', 'state', selectedState]);
+                // @ts-ignore
+                if (selectedDistrict) filter.push(['==', 'number', selectedDistrict]);
 
-            //@ts-ignore
-            const layerFilter = filter.concat([existingFilter]);
-            // @ts-ignore
-            map.setFilter('districts_' + i, layerFilter);
-            // @ts-ignore
-            map.setFilter('districts_' + i + '_boundary', layerFilter);
-            // @ts-ignore
-            map.setFilter('districts_' + i + '_label', layerFilter);
+                //@ts-ignore
+                const layerFilter = filter.concat([existingFilter]);
+                map.setFilter('districts_' + i, layerFilter);
+                map.setFilter('districts_' + i + '_boundary', layerFilter);
+                map.setFilter('districts_' + i + '_label', layerFilter);
+            }
         }
-    };
+    }, [map, selectedState, selectedDistrict]);
 
     const focusMap = useCallback((stateAbbr, districtNum) => {
         if (map) {
@@ -295,7 +142,6 @@ const CongressMap = (props: ICongressMapProps) => {
                 [window.innerWidth / 2.75, window.innerHeight / 2.75]
             );
             // console.log('bbox: ', bbox, 'view: ', view);
-            // @ts-ignore
             map.easeTo(view);
         }
     }, [bboxes, map]);
@@ -314,7 +160,6 @@ const CongressMap = (props: ICongressMapProps) => {
 
     const handleMapClick = (evt) => {
         if (map) {
-            // @ts-ignore
             const features = map.queryRenderedFeatures(evt.point);
 
             // console.log('features: ', features);
@@ -356,7 +201,6 @@ const CongressMap = (props: ICongressMapProps) => {
 
     const handleMouseMove = (evt) => {
         if (map && mapLoaded) {
-            // @ts-ignore
             const features = map.queryRenderedFeatures(evt.point);
 
             let cursorStyle = '';
@@ -375,7 +219,6 @@ const CongressMap = (props: ICongressMapProps) => {
             }
 
             //TODO: Fix this - it's not changing the cursor
-            // @ts-ignore
             map.getCanvas().style.cursor = cursorStyle;
         }
     };
