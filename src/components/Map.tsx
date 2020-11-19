@@ -1,13 +1,13 @@
 import React from 'react';
 import ReactMapGl, { NavigationControl, ViewportChangeHandler } from 'react-map-gl';
-import { ensureMapFullyLoaded } from '../utils/MapHelpers';
+import { Map as TMap } from 'mapbox-gl';
 
 import Config from '../config';
 
 interface IMapProps {
-  map: any;
+  map: TMap | null;
   setMap: Function;
-  setMapLoaded: Function;
+  setMapFullyLoaded: Function;
   viewport: any;
   setViewport: ViewportChangeHandler;
   handleMapClick: Function;
@@ -17,10 +17,16 @@ interface IMapProps {
 const mapConf = Config.mapbox;
 
 const Map = (props: IMapProps) => {
-  const { map, setMap, setMapLoaded, viewport, setViewport, handleMapClick, handleMouseMove } = props;
+  const { map, setMap, setMapFullyLoaded, viewport, setViewport, handleMapClick, handleMouseMove } = props;
 
   const onMapLoad = () => {
-    ensureMapFullyLoaded(map, setMapLoaded);
+    if (map) {
+      if (!map.loaded() || !map.isStyleLoaded() || !map.areTilesLoaded()) {
+        setTimeout(onMapLoad, 100);
+      } else {
+        setMapFullyLoaded(true);
+      }
+    }
   };
 
   return (
