@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import geoViewport from "@mapbox/geo-viewport/index";
-import { continentalBbox, continentalViewport, layerIds } from '../constants';
-import Map from './Map';
-import MenuTree from './MenuTree/MenuTree';
-import InfoBox from './InfoBox/InfoBox';
+import { Map as TMap } from 'mapbox-gl';
+import { continentalBbox, continentalViewport, layerIds } from '../../constants';
+import Map from '../Map';
+import MenuTree from '../MenuTree/MenuTree';
+import InfoBox from '../InfoBox/InfoBox';
+import { setDistrictHoverState } from './mapEffects';
 
 interface ICongressMapProps {
     bboxes?: any;
@@ -14,9 +16,8 @@ interface ICongressMapProps {
 const CongressMap = (props: ICongressMapProps) => {
     const { bboxes, legislatorIndex } = props;
 
+    const [map, setMap] = useState<TMap | null>(null);
     const [mapLoaded, setMapLoaded] = useState(false);
-    // const [map, setMap] = useStateWithCallback(null, () => onMapFullRender(map, setMapLoaded));
-    const [map, setMap] = useState(null);
     const [viewport, setViewport] = useState(continentalViewport);
     const [expanded, setExpanded] = useState(false);
     const [district, setDistrict] = useState({});
@@ -36,27 +37,10 @@ const CongressMap = (props: ICongressMapProps) => {
 
     useEffect(() => {
         if (map && mapLoaded) {
-            // remove the hover setting from whatever district was being hovered before
             if (prevHoveredDistrictId) {
-                // @ts-ignore
-                map.setFeatureState({
-                    source: 'districts2018',
-                    sourceLayer: 'districts',
-                    id: prevHoveredDistrictId
-                }, {
-                    hover: false
-                });
+                setDistrictHoverState(map, prevHoveredDistrictId!, false)
             }
-
-            // Set hover to true on the currently hovered district
-            // @ts-ignore
-            map.setFeatureState({
-                source: 'districts2018',
-                sourceLayer: 'districts',
-                id: hoveredDistrictId
-            }, {
-                hover: true
-            });
+            setDistrictHoverState(map, hoveredDistrictId!, true);
         }
     }, [map, mapLoaded, prevHoveredDistrictId, hoveredDistrictId]);
 
@@ -180,7 +164,9 @@ const CongressMap = (props: ICongressMapProps) => {
             // console.log('features: ', features);
 
             features.forEach(feature => {
+                //@ts-ignore
                 const stateAbbr = feature.properties.state;
+                //@ts-ignore
                 const districtNum = parseInt(feature.properties.number, 10);
                 let districtData = {};
                 if (legislatorIndex && legislatorIndex[stateAbbr]) {
@@ -260,6 +246,7 @@ const CongressMap = (props: ICongressMapProps) => {
             // @ts-ignore
             if (selectedDistrict) filter.push(['==', 'number', selectedDistrict]);
 
+            //@ts-ignore
             const layerFilter = filter.concat([existingFilter]);
 
             // @ts-ignore
@@ -286,6 +273,7 @@ const CongressMap = (props: ICongressMapProps) => {
             // @ts-ignore
             if (selectedDistrict) filter.push(['==', 'number', selectedDistrict]);
 
+            //@ts-ignore
             const layerFilter = filter.concat([existingFilter]);
             // @ts-ignore
             map.setFilter('districts_' + i, layerFilter);
@@ -382,6 +370,7 @@ const CongressMap = (props: ICongressMapProps) => {
                 // Make sure the cursor is a pointer over any visible district.
                 cursorStyle = 'pointer';
                 // set the hovered district id
+                //@ts-ignore
                 setHoveredDistrictId(hoveredDistrict[0].id);
             }
 
