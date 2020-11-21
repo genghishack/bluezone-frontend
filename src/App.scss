@@ -1,0 +1,231 @@
+.App {
+
+  .light {
+    font-weight: 200;
+  }
+
+  .normal {
+    font-weight: 400;
+  }
+
+  .heavy {
+    font-weight: 600;
+  }
+}
+
+#App-header {
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff;
+  height: 25px;
+  padding: 15px 20px 10px;
+
+  .home-link {
+    display: flex;
+    text-decoration: none;
+
+    .App-logo {
+      margin-right: 5px;
+      font-size: 22px;
+      color: #6495ed;
+    }
+    .App-title {
+      font-family: 'Open sans', sans-serif;
+      font-size: 22px;
+    }
+
+  }
+
+  .App-menu {
+    display: flex;
+    margin-right: 350px;
+
+    .control-title {
+      position: relative;
+      top: 2px;
+      margin-right: 15px;
+    }
+
+    .selector {
+      padding: 0 5px;
+      .label {
+        position: relative;
+        top: 2px;
+        margin-right: 5px;
+      }
+    }
+
+    .link {
+      padding: 0 5px;
+      cursor: pointer;
+      text-decoration: underline;
+      color: cornflowerblue;
+    }
+  }
+}
+
+#main-container {
+  display: flex;
+  width: 100%;
+  height: calc(100vh - 50px);
+
+  .menuTreeWrapper {
+    background: #FFF;
+    width: 250px;
+    height: calc(100% - 60px);
+    position: absolute;
+    padding: 8px;
+    overflow-y: auto;
+    z-index: 11;
+    display: block;
+    font-size: 15px;
+    > div {
+      margin-bottom: 0px;
+    }
+
+    .entityChildren {
+      margin-left: 16px;
+      &.closed {
+        display: none;
+      }
+    }
+
+    .entityItem {
+      cursor: pointer;
+    }
+
+    .chevronContainer {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      display: inline-block;
+      right: 0;
+      height: 15px;
+      .entityChevron {
+        width: 15px;
+        margin: 0px 6px;
+        transition: transform .2s linear;
+        &.open {
+          transform: rotate(180deg);
+        }
+      }
+      &.hidden {
+        display: none;
+      }
+    }
+
+    .entityNameAndChevron {
+      border-bottom: 1px solid #ccc;
+      position: relative;
+      &.active {
+        background: #8da6c2;
+        color: #fff;
+      }
+      .entityName {
+        max-width: 195px;
+        font-weight: 700;
+        padding: 8px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        border-radius: 4px;
+      }
+    }
+    @media (max-width: 700px) {
+      .chevronContainer {
+        margin-right: 20px;
+      }
+    }
+  }
+
+  @media (max-width: 700px) {
+    .menuTreeWrapper {
+      width: 100%;
+      display: none;
+      &.show {
+        display: block;
+      }
+    }
+  }
+
+  .no-info {
+    padding: 15px;
+    margin: auto;
+    font-size: 22px;
+    color: #555;
+    width: 400px;
+  }
+
+  .congress-info {
+    padding: 25px 15px;
+
+    .district-name {
+      font-size: 22px;
+      height: 50px;
+    }
+
+    #rep-section, #sen-section, #rep-candidate-section {
+      margin: 25px 15px;
+
+      .title {
+        padding: 0 0 25px;
+        font-size: 17px;
+        font-style: italic;
+      }
+
+      .info {
+        display: flex;
+
+        .photo {
+          img {
+            width: 100px;
+            margin: 0 15px 15px 0;
+          }
+        }
+
+        .line {
+          display: flex;
+        }
+
+        .heading {
+          padding-bottom: 5px;
+
+          .party {
+            margin: 0 5px;
+          }
+        }
+
+        .links {
+          font-size: 12px;
+          padding: 5px 0;
+
+          a {
+            text-decoration: none;
+          }
+
+          i {
+            margin-left: 5px;
+            font-size: 10px;
+            position: relative;
+            top: -1px;
+          }
+        }
+
+        .dob {
+          font-size: 12px;
+        }
+      }
+
+    }
+
+  }
+
+  .focus-on-usa {
+    padding: 8px;
+    max-width: 233px;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+  }
+
+}
+
