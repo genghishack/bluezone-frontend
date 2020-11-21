@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import Header from '../Header';
 import CongressMap from '../CongressMap/CongressMap';
@@ -8,6 +8,8 @@ import { getLegislatorsByState } from '../../utils/data-index';
 import { setBBoxes, setDistrictsByState, setStates } from '../../redux/actions/states';
 import { setLegislators, setLegislatorsByState } from '../../redux/actions/legislators';
 import { setError } from '../../redux/actions/errors';
+import MenuTree from '../MenuTree/MenuTree';
+import InfoBox from '../InfoBox/InfoBox';
 
 interface ICongressViewProps {
   dispatch: Function;
@@ -17,6 +19,11 @@ const apiConfig = Config.apiGateway;
 
 const CongressView = (props: ICongressViewProps) => {
   const { dispatch } = props;
+
+  const [expanded, setExpanded] = useState(false);
+  const [district, setDistrict] = useState({});
+  const [selectedState, setSelectedState] = useState('');
+  const [selectedDistrict, setSelectedDistrict] = useState('');
 
   useLayoutEffect(() => {
     fetch(`${apiConfig.URL}/public/state/districts`)
@@ -77,12 +84,32 @@ const CongressView = (props: ICongressViewProps) => {
       )
   };
 
+  const handleDistrictSelection = (stateAbbr: string, districtNum: string = '') => {
+    setSelectedState(stateAbbr);
+    setSelectedDistrict(districtNum);
+  };
+
   return (
     <div className="CongressView">
       <Header
         handleYearSelection={handleYearSelection}
       />
-      <CongressMap/>
+      <div id="main-container">
+        <MenuTree
+          handleSelection={handleDistrictSelection}
+        />
+        <CongressMap 
+          selectedState={selectedState}
+          selectedDistrict={selectedDistrict}
+          setDistrict={setDistrict}
+          setExpanded={setExpanded}
+        />
+        <InfoBox
+          district={district}
+          expanded={expanded}
+          closeClick={() => setExpanded(false)}
+        />
+      </div>
     </div>
   )
 }
