@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import Header from '../Header';
+import Header from '../Header/Header';
 import CongressMap from '../CongressMap/CongressMap';
 import Config from '../../config';
 

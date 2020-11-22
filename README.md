@@ -1,10 +1,10 @@
 # Project Bluezone
 
-The Bluezone project is an effort to visualize data about the U.S. government in an easily-digestible form, enabling organizing efforts with easy access to information on choke points and blockages within the system.  In other words - where to move the levers so that organizers and volunteers can have the greatest effect across the entire country.
+The Bluezone project is an effort to visualize data about the U.S. government in an easily-digestible form, enabling organizing efforts with easy access to information on choke points and blockages within the system.  In other words, to show where to move the levers so that organizers and volunteers can have the greatest effect across the entire country.
 
 ## Goals
 
-- Using a map-based interface, display publicly-available data on various levels of government, including the U.S. Congress, Executive branch and the Judicial branch.  
+- Using a map-based interface, display publicly-available data on various levels of government, including the U.S. Congress, Executive branch and the Judiciary.  
 
 - Display party affiliations and voting records of members of congress.
 
