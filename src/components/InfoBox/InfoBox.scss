@@ -1,4 +1,13 @@
-#info_box_wrapper {
+.InfoBox {
+  position: absolute;
+  padding-top: 16px;
+  height: 100%;
+  width: 325px;
+  background: #fff;
+  right: -450px;
+  transition: right 0.3s;
+  z-index: 11;
+
   &.no-info {
     padding: 15px;
     margin: auto;
@@ -7,53 +16,22 @@
     width: 400px;
   }
 
-  &.info_box_wrapper {
-    position: absolute;
-    padding-top: 16px;
-    height: 100%;
-    width: 325px;
-    background: #fff;
-    right: -450px;
-    transition: right 0.3s;
-    z-index: 11;
+  &.expanded {
+    right: 0;
+  }
 
-    &.expanded {
+  @media (max-width: 600px) {
+    .expanded {
+      width: 100%;
       right: 0;
-    }
-
-    @media (max-width: 600px) {
-      .expanded {
-        width: 100%;
-        right: 0;
-      }
-    }
-
-    .modal_close {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      width: 25px;
-      cursor: pointer;
     }
   }
 
-  .congress-info {
-    padding: 25px 15px;
-
-    .district-name {
-      font-size: 22px;
-      height: 50px;
-    }
-
-    #rep-section,
-    #sen-section {
-      margin: 25px 15px;
-
-      .title {
-        padding: 0 0 25px;
-        font-size: 17px;
-        font-style: italic;
-      }
-    }
+  .closeIcon {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 25px;
+    cursor: pointer;
   }
 }

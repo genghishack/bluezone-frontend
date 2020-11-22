@@ -1,11 +1,10 @@
 import React from 'react';
 
-import Legislator from './Legislator';
-
 import "./InfoBox.scss";
 
 import closeSVG from "../../assets/close_icon.png"
 import { connect } from "react-redux";
+import CongressInfo from './CongressInfo';
 
 interface IInfoBoxProps {
   district: any;
@@ -36,58 +35,23 @@ const InfoBox = (props: IInfoBoxProps) => {
     // console.log(rep, sens);
 
     return (
-      <div
-        id="info_box_wrapper"
-        className={`info_box_wrapper ${expandedClass}`}
-      >
+      <div className={`InfoBox ${expandedClass}`}>
         <img
-          className="modal_close"
+          className="closeIcon"
           src={closeSVG}
           alt="close"
           onClick={handleCloseClick}
         ></img>
-        <div className="field_item_wrapper">
-          <img
-            className="modal_close"
-            src={closeSVG}
-            alt="close"
-            onClick={handleCloseClick}
-          ></img>
-          <div className="congress-info">
-            <div className="district-name">
-              {districtTitle}
-            </div>
-            <section id="rep-section">
-              <div className="title">Representative</div>
-              <Legislator
-                data={rep}
-              />
-            </section>
-            <section id="sen-section">
-              <div className="title">Senators</div>
-              {sens.length ?
-                sens.map((sen: any) => (
-                  <Legislator
-                    key={sen.id.bioguide}
-                    data={sen}
-                  />
-                )
-                ) : (
-                  <div className="no-senators">
-                    Non-State U.S. Territories and the District of Columbia have no senators.
-                  </div>
-                )}
-            </section>
-          </div>
-        </div>
+        <CongressInfo 
+          districtTitle={districtTitle}
+          rep={rep}
+          sens={sens}
+        />
       </div>
     )
   } else {
     return (
-      <div
-        id="info_box_wrapper"
-        className={`no-info info_box_wrapper ${expandedClass}`}
-      >No Info</div>
+      <div className={`info_box_wrapper no-info ${expandedClass}`}>No Info</div>
     )
   }
 };
