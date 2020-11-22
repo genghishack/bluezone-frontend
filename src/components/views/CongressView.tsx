@@ -11,6 +11,8 @@ import { setError } from '../../redux/actions/errors';
 import MenuTree from '../MenuTree/MenuTree';
 import InfoBox from '../InfoBox/InfoBox';
 
+import './CongressView.scss';
+
 interface ICongressViewProps {
   dispatch: Function;
 }
