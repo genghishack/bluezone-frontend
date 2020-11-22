@@ -1,97 +1,58 @@
-#info_box_wrapper.info_box_wrapper {
-  position: absolute;
-  padding-top: 16px;
-  height: 100%;
-  width: 325px;
-  background: #fff;
-  right: -450px;
-  transition: right .3s;
-  z-index: 11;
-}
-#info_box_wrapper.info_box_wrapper.expanded {
-  right: 0;
-}
-.modal_close {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 25px;
-  cursor: pointer;
-}
-@media (max-width: 600px) {
-  #info_box_wrapper.info_box_wrapper.expanded {
-    width: 100%;
-    right: 0;
-  }
-}
-
-.no-info {
-  padding: 15px;
-  margin: auto;
-  font-size: 22px;
-  color: #555;
-  width: 400px;
-}
-
-.congress-info {
-  padding: 25px 15px;
-
-  .district-name {
+#info_box_wrapper {
+  &.no-info {
+    padding: 15px;
+    margin: auto;
     font-size: 22px;
-    height: 50px;
+    color: #555;
+    width: 400px;
   }
 
-  #rep-section,
-  #sen-section,
-  #rep-candidate-section {
-    margin: 25px 15px;
+  &.info_box_wrapper {
+    position: absolute;
+    padding-top: 16px;
+    height: 100%;
+    width: 325px;
+    background: #fff;
+    right: -450px;
+    transition: right 0.3s;
+    z-index: 11;
 
-    .title {
-      padding: 0 0 25px;
-      font-size: 17px;
-      font-style: italic;
+    &.expanded {
+      right: 0;
     }
 
-    .info {
-      display: flex;
-
-      .photo {
-        img {
-          width: 100px;
-          margin: 0 15px 15px 0;
-        }
+    @media (max-width: 600px) {
+      .expanded {
+        width: 100%;
+        right: 0;
       }
+    }
 
-      .line {
-        display: flex;
-      }
+    .modal_close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 25px;
+      cursor: pointer;
+    }
+  }
 
-      .heading {
-        padding-bottom: 5px;
+  .congress-info {
+    padding: 25px 15px;
 
-        .party {
-          margin: 0 5px;
-        }
-      }
+    .district-name {
+      font-size: 22px;
+      height: 50px;
+    }
 
-      .links {
-        font-size: 12px;
-        padding: 5px 0;
+    #rep-section,
+    #sen-section {
+      margin: 25px 15px;
 
-        a {
-          text-decoration: none;
-        }
-
-        i {
-          margin-left: 5px;
-          font-size: 10px;
-          position: relative;
-          top: -1px;
-        }
-      }
-
-      .dob {
-        font-size: 12px;
+      .title {
+        padding: 0 0 25px;
+        font-size: 17px;
+        font-style: italic;
       }
     }
   }

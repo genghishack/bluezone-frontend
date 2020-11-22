@@ -87,7 +87,7 @@ const InfoBox = (props: IInfoBoxProps) => {
       <div
         id="info_box_wrapper"
         className={`no-info info_box_wrapper ${expandedClass}`}
-      ></div>
+      >No Info</div>
     )
   }
 };
