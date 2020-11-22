@@ -22,7 +22,7 @@ const apiConfig = Config.apiGateway;
 const CongressView = (props: ICongressViewProps) => {
   const { dispatch } = props;
 
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
   const [district, setDistrict] = useState({});
   const [selectedState, setSelectedState] = useState('');
   const [selectedDistrict, setSelectedDistrict] = useState('');
