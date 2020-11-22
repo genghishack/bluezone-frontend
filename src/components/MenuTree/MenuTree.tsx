@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {connect} from "react-redux";
 import {getUSStateJsonData} from '../../utils/DataHelpers';
-import EntityItem from '../EntityItem/EntityItem';
+import EntityItem from './EntityItem';
 
 interface IMenuTreeProps {
   handleSelection: Function;

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Legislator from '../Legislator';
+import Legislator from './Legislator';
 
 import "./InfoBox.scss";
 
