@@ -57,12 +57,12 @@ const About = () => {
 
       <ul>
         <li>
-          A slider bar to choose any year in the congressional history, to show
-          changes in representation over time.
-        </li>
-        <li>
           Load geospatial data by year to show changes in the number and shapes 
           of congressional districts, each time they have been redistricted.
+          Note that we are currently using a map of the congressional districts
+          from 2018, while having the ability to select years going back to 1789.
+          Future maps will accurately represent the number of states and congressional 
+          districts that were part of the U.S. in any given year.
         </li>
         <li>
           More efficient data querying to increase performance and usability.

@@ -10,6 +10,7 @@
     "@mapbox/geo-viewport": "^0.4.1",
     "@reduxjs/toolkit": "^1.1.0",
     "moment": "^2.29.1",
+    "rc-slider": "^9.6.4",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-map-gl": "^5.2.10",
