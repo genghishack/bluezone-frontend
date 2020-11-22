@@ -49,7 +49,7 @@ const About = () => {
       <h2>Progress</h2>
 
       <p>
-        Project Bluezone is still in development.We are approaching a proof-of-concept
+        Project Bluezone is still in development. We are approaching a proof-of-concept
         that will enable us to build in greater functionality more rapidly.
       </p>
 
