@@ -1,0 +1,80 @@
+#Header {
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff;
+  height: 25px;
+  padding: 15px 20px 10px;
+
+  .home-link {
+    display: flex;
+    text-decoration: none;
+
+    .main-logo {
+      margin-right: 5px;
+      font-size: 22px;
+      color: #6495ed;
+    }
+    .main-title {
+      font-family: 'Open sans', sans-serif;
+      font-size: 22px;
+      white-space: nowrap;
+      margin-right: 100px;
+    }
+
+  }
+
+  .nav {
+    display: flex;
+    margin-left: 50px;
+    width: 100%;
+    font-size: 15px;
+    color: #00c;
+
+    .nav-item {
+      margin: 3px 10px;
+
+      &.active {
+        border-bottom: 2px solid #00f;
+        cursor: normal;
+        color: #006;
+      }
+
+      &.inactive:hover {
+        border-bottom: 2px solid #006;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .controls {
+    display: flex;
+    margin-right: 50px;
+
+    .YearSelection {
+      display: flex;
+    }
+
+    .control-title {
+      position: relative;
+      top: 2px;
+      margin-right: 15px;
+    }
+
+    .selector {
+      padding: 0 5px;
+      .label {
+        position: relative;
+        top: 2px;
+        margin-right: 5px;
+      }
+    }
+
+    .link {
+      padding: 0 5px;
+      cursor: pointer;
+      text-decoration: underline;
+      color: cornflowerblue;
+    }
+  }
+}
+
