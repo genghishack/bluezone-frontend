@@ -1,0 +1,42 @@
+.Legislator {
+  display: flex;
+
+  .photo {
+    img {
+      width: 100px;
+      margin: 0 15px 15px 0;
+    }
+  }
+
+  .line {
+    display: flex;
+  }
+
+  .heading {
+    padding-bottom: 5px;
+
+    .party {
+      margin: 0 5px;
+    }
+  }
+
+  .links {
+    font-size: 12px;
+    padding: 5px 0;
+
+    a {
+      text-decoration: none;
+    }
+
+    i {
+      margin-left: 5px;
+      font-size: 10px;
+      position: relative;
+      top: -1px;
+    }
+  }
+
+  .dob {
+    font-size: 12px;
+  }
+}
