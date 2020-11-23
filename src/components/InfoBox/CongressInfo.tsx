@@ -12,17 +12,17 @@ interface ICongressInfoProps {
 const CongressInfo = (props: ICongressInfoProps) => {
   const { districtTitle, rep, sens } = props;
   return (
-    <div className="congress-info">
-      <div className="district-name">
+    <div className="CongressInfo">
+      <div className="districtName">
         {districtTitle}
       </div>
-      <section id="rep-section">
+      <section id="repSection">
         <div className="title">Representative</div>
         <Legislator
           data={rep}
         />
       </section>
-      <section id="sen-section">
+      <section id="senSection">
         <div className="title">Senators</div>
         {sens.length ?
           sens.map((sen: any) => (
@@ -30,9 +30,8 @@ const CongressInfo = (props: ICongressInfoProps) => {
               key={sen.id.bioguide}
               data={sen}
             />
-          )
-          ) : (
-            <div className="no-senators">
+          )) : (
+            <div className="noSenators">
               Non-State U.S. Territories and the District of Columbia have no senators.
             </div>
           )}

@@ -1,13 +1,10 @@
-.congress-info {
-  padding: 25px 15px;
-
-  .district-name {
-    font-size: 22px;
+.CongressInfo {
+  .districtName {
     height: 50px;
   }
 
-  #rep-section,
-  #sen-section {
+  #repSection,
+  #senSection {
     margin: 25px 15px;
 
     .title {

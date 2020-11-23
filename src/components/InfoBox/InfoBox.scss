@@ -1,23 +1,24 @@
 .InfoBox {
-  position: absolute;
   padding-top: 16px;
   height: 100%;
-  width: 325px;
+  width: 400px;
   background: #fff;
-  right: -450px;
-  transition: right 0.3s;
-  z-index: 11;
 
-  &.no-info {
-    padding: 15px;
-    margin: auto;
+  .content {
+    padding: 25px 15px;
     font-size: 22px;
     color: #555;
-    width: 400px;
   }
 
-  &.expanded {
-    right: 0;
+  &.slide {
+    position: absolute;
+    right: -450px;
+    transition: right 0.3s;
+    z-index: 11;
+
+    &.expanded {
+      right: 0;
+    }
   }
 
   @media (max-width: 600px) {

@@ -10,13 +10,20 @@ interface ICongressMapProps {
   selectedState: string;
   selectedDistrict: string;
   setDistrict: Function;
-  setExpanded: Function;
+  setInfoTrayExpanded: Function;
   bboxes?: any;
   legislatorIndex?: any;
 }
 
 const CongressMap = (props: ICongressMapProps) => {
-  const { selectedState, selectedDistrict, setDistrict, setExpanded, bboxes, legislatorIndex } = props;
+  const { 
+    selectedState, 
+    selectedDistrict, 
+    setDistrict, 
+    setInfoTrayExpanded, 
+    bboxes, 
+    legislatorIndex 
+  } = props;
 
   const [map, setMap] = useState<TMap | null>(null);
   const [mapFullyLoaded, setMapFullyLoaded] = useState(false);
@@ -100,11 +107,11 @@ const CongressMap = (props: ICongressMapProps) => {
           district.properties.number
         );
         setDistrict(district);
-        setExpanded(true);
+        setInfoTrayExpanded(true);
         return;
       }
       setDistrict({});
-      setExpanded(false);
+      setInfoTrayExpanded(false);
     }
   };
 

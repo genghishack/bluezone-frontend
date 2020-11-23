@@ -22,7 +22,7 @@ const apiConfig = Config.apiGateway;
 const CongressView = (props: ICongressViewProps) => {
   const { dispatch } = props;
 
-  const [expanded, setExpanded] = useState(true);
+  const [infoTrayExpanded, setInfoTrayExpanded] = useState(false);
   const [district, setDistrict] = useState({});
   const [selectedState, setSelectedState] = useState('');
   const [selectedDistrict, setSelectedDistrict] = useState('');
@@ -100,16 +100,19 @@ const CongressView = (props: ICongressViewProps) => {
         <MenuTree
           handleSelection={handleDistrictSelection}
         />
-        <CongressMap 
+        <CongressMap
           selectedState={selectedState}
           selectedDistrict={selectedDistrict}
           setDistrict={setDistrict}
-          setExpanded={setExpanded}
+          setInfoTrayExpanded={setInfoTrayExpanded}
         />
         <InfoBox
           district={district}
-          expanded={expanded}
-          closeClick={() => setExpanded(false)}
+          /* Comment this line with // to use Infobox as a slider tray 
+          slide={true}
+          expanded={infoTrayExpanded}
+          setExpanded={setInfoTrayExpanded}
+          //*/
         />
       </div>
     </div>

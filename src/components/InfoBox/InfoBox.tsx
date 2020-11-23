@@ -8,50 +8,68 @@ import CongressInfo from './CongressInfo';
 
 interface IInfoBoxProps {
   district: any;
-  expanded: boolean;
-  closeClick: Function;
+  slide?: boolean;
+  expanded?: boolean;
+  setExpanded?: Function;
   legislatorIndex?: any;
 }
 
 const InfoBox = (props: IInfoBoxProps) => {
-  const { district, expanded, closeClick, legislatorIndex } = props;
+  const { district, slide, expanded, setExpanded, legislatorIndex } = props;
 
   const handleCloseClick = (e) => {
-    console.log(e)
-    e.preventDefault()
-    closeClick();
+    if (setExpanded) {
+      setExpanded(false);
+    }
   }
 
   const expandedClass = expanded ? "expanded" : "";
   const districtTitle = (district.properties) ? district.properties.title_long : '';
 
-  if (district.properties) {
-    const state = district.properties.state;
-    const district_num = parseInt(district.properties.number, 10);
-    const rep = legislatorIndex[state].rep[district_num];
 
-    const sens = legislatorIndex[state].sen ? Object.values(legislatorIndex[state].sen) : [];
+  const renderCongressInfo = () => {
+    if (district.properties) {
+      const state = district.properties.state;
+      const district_num = parseInt(district.properties.number, 10);
+      const rep = legislatorIndex[state].rep[district_num];
+      const sens = legislatorIndex[state].sen ? Object.values(legislatorIndex[state].sen) : [];
+      return (
+        <CongressInfo
+          districtTitle={districtTitle}
+          rep={rep}
+          sens={sens}
+        />
+      );
+    } else {
+      return (
+        <div className="no-info">No Info</div>
+      );
+    }
+  }
 
-    // console.log(rep, sens);
+  const renderContent = () => (
+    <div className="content">
+      {renderCongressInfo()}
+    </div>
+  )
 
+  if (slide) {
     return (
-      <div className={`InfoBox ${expandedClass}`}>
+      <div className={`InfoBox slide ${expandedClass}`}>
         <img
           className="closeIcon"
           src={closeSVG}
           alt="close"
           onClick={handleCloseClick}
         ></img>
-        <CongressInfo 
-          districtTitle={districtTitle}
-          rep={rep}
-          sens={sens}
-        />
+        {renderContent()}
       </div>
     )
   } else {
     return (
-      <div className={`info_box_wrapper no-info ${expandedClass}`}>No Info</div>
+      <div className="InfoBox">
+        {renderContent()}
+      </div>
     )
   }
 };
