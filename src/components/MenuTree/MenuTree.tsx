@@ -3,6 +3,8 @@ import {connect} from "react-redux";
 import {getUSStateJsonData} from '../../utils/DataHelpers';
 import EntityItem from './EntityItem';
 
+import './MenuTree.scss';
+
 interface IMenuTreeProps {
   handleSelection: Function;
   showMenuTree?: boolean;

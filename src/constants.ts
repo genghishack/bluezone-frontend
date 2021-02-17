@@ -1,23 +1,4 @@
-import geoViewport, { BoundingBox } from "@mapbox/geo-viewport";
+import { BoundingBox } from "@mapbox/geo-viewport";
 
-// Note: this doesn't really belong here
-export const layerIds = ['districts_hover'];
-
-export const continentalBbox: BoundingBox = [-128.8, 23.6, -65.4, 50.2];
-
-export const continentalViewport = (() => {
-    // Use GeoViewport and the window size to determine an
-    // appropriate center and zoom for the continental US
-    const continentalView = (w, h) => {
-        return geoViewport.viewport(continentalBbox, [w, h]);
-    };
-    const continental = continentalView(window.innerWidth / 2, window.innerHeight / 2);
-
-    return {
-        longitude: continental.center[0],
-        latitude: continental.center[1],
-        zoom: continental.zoom,
-        bearing: 0,
-        pitch: 0
-    }
-})();
+export const continentalBbox: BoundingBox = [-126.8, 23.6, -65.4, 50.2];
+// export const continentalBbox: BoundingBox = [-124.848974,24.396308,-66.885444,49.384358];

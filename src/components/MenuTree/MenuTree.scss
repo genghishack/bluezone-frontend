@@ -1,0 +1,85 @@
+.menuTreeWrapper {
+  background: #fff;
+  width: 250px;
+  height: calc(100% - 60px);
+  // position: absolute;
+  padding: 8px;
+  overflow-y: auto;
+  // z-index: 11;
+  display: block;
+  font-size: 15px;
+  > div {
+    margin-bottom: 0px;
+  }
+
+  .entityChildren {
+    margin-left: 16px;
+    &.closed {
+      display: none;
+    }
+  }
+
+  .entityItem {
+    cursor: pointer;
+  }
+
+  .chevronContainer {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-block;
+    right: 0;
+    height: 15px;
+    .entityChevron {
+      width: 15px;
+      margin: 0px 6px;
+      transition: transform 0.2s linear;
+      &.open {
+        transform: rotate(180deg);
+      }
+    }
+    &.hidden {
+      display: none;
+    }
+  }
+
+  .entityNameAndChevron {
+    border-bottom: 1px solid #ccc;
+    position: relative;
+    &.active {
+      background: #8da6c2;
+      color: #fff;
+    }
+    .entityName {
+      max-width: 195px;
+      font-weight: 700;
+      padding: 8px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+      border-radius: 4px;
+    }
+  }
+  @media (max-width: 700px) {
+    .chevronContainer {
+      margin-right: 20px;
+    }
+  }
+}
+
+@media (max-width: 700px) {
+  .menuTreeWrapper {
+    width: 100%;
+    display: none;
+    &.show {
+      display: block;
+    }
+  }
+}
+
+.focus-on-usa {
+  padding: 8px;
+  max-width: 233px;
+  border-bottom: 1px solid #ccc;
+  cursor: pointer;
+}

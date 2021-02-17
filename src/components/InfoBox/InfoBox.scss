@@ -1,26 +1,38 @@
-#info_box_wrapper.info_box_wrapper {
-  position: absolute;
+.InfoBox {
   padding-top: 16px;
   height: 100%;
-  width: 325px;
+  width: 400px;
   background: #fff;
-  right: -450px;
-  transition: right .3s;
-  z-index: 11;
-}
-#info_box_wrapper.info_box_wrapper.expanded {
-  right: 0;
-}
-.modal_close {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 25px;
-  cursor: pointer;
-}
-@media (max-width: 600px) {
-  #info_box_wrapper.info_box_wrapper.expanded {
-    width: 100%;
-    right: 0;
+
+  .content {
+    padding: 25px 15px;
+    font-size: 22px;
+    color: #555;
+  }
+
+  &.slide {
+    position: absolute;
+    right: -450px;
+    transition: right 0.3s;
+    z-index: 11;
+
+    &.expanded {
+      right: 0;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .expanded {
+      width: 100%;
+      right: 0;
+    }
+  }
+
+  .closeIcon {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 25px;
+    cursor: pointer;
   }
 }

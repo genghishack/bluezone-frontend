@@ -1,26 +1,39 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { Map as TMap } from 'mapbox-gl';
-import { continentalViewport, layerIds } from '../../constants';
+import { continentalViewport } from '../../utils/MapHelpers';
 import Map from '../Map';
 import { setDistrictFillByParty, setDistrictHoverState, filterDataset, focusMap } from './mapEffects';
 import { addDistrictBoundaryLayer, addDistrictFillLayer, addDistrictHoverLayer, addDistrictLabelLayer, addDistrictSource } from "./mapLayers";
+
+import './CongressMap.scss';
 
 interface ICongressMapProps {
   selectedState: string;
   selectedDistrict: string;
   setDistrict: Function;
-  setExpanded: Function;
+  setInfoTrayExpanded: Function;
   bboxes?: any;
   legislatorIndex?: any;
 }
 
 const CongressMap = (props: ICongressMapProps) => {
-  const { selectedState, selectedDistrict, setDistrict, setExpanded, bboxes, legislatorIndex } = props;
+  const {
+    selectedState,
+    selectedDistrict,
+    setDistrict,
+    setInfoTrayExpanded,
+    bboxes,
+    legislatorIndex
+  } = props;
+
+  const mapWindowRef = useRef(null);
+
+  const layerIds = ['districts_hover'];
 
   const [map, setMap] = useState<TMap | null>(null);
   const [mapFullyLoaded, setMapFullyLoaded] = useState(false);
-  const [viewport, setViewport] = useState(continentalViewport);
+  const [viewport, setViewport] = useState(continentalViewport());
   const [hoveredDistrictId, setHoveredDistrictId] = useState(null);
 
   const usePrevious = (value) => {
@@ -32,6 +45,14 @@ const CongressMap = (props: ICongressMapProps) => {
   }
 
   const prevHoveredDistrictId = usePrevious(hoveredDistrictId);
+
+  useEffect(() => {
+    //@ts-ignore
+    const width = mapWindowRef.current ? mapWindowRef.current.offsetWidth : 0;
+    //@ts-ignore
+    const height = mapWindowRef.current ? mapWindowRef.current.offsetHeight : 0
+    setViewport(continentalViewport(width, height));
+  }, [map]);
 
   useEffect(() => {
     if (map && mapFullyLoaded) {
@@ -100,11 +121,11 @@ const CongressMap = (props: ICongressMapProps) => {
           district.properties.number
         );
         setDistrict(district);
-        setExpanded(true);
+        setInfoTrayExpanded(true);
         return;
       }
       setDistrict({});
-      setExpanded(false);
+      setInfoTrayExpanded(false);
     }
   };
 
@@ -130,15 +151,17 @@ const CongressMap = (props: ICongressMapProps) => {
   };
 
   return (
-    <Map
-      map={map}
-      setMap={setMap}
-      setMapFullyLoaded={setMapFullyLoaded}
-      viewport={viewport}
-      setViewport={setViewport}
-      handleMapClick={handleMapClick}
-      handleMouseMove={handleMouseMove}
-    />
+    <div className="CongressMap" ref={mapWindowRef}>
+      <Map
+        map={map}
+        setMap={setMap}
+        setMapFullyLoaded={setMapFullyLoaded}
+        viewport={viewport}
+        setViewport={setViewport}
+        handleMapClick={handleMapClick}
+        handleMouseMove={handleMouseMove}
+      />
+    </div>
   );
 }
 

@@ -1,6 +1,8 @@
 import React from 'react';
 import moment from 'moment';
 
+import './Legislator.scss';
+
 interface ILegislatorProps {
   data: any;
 }
@@ -100,7 +102,7 @@ const Legislator = (props: ILegislatorProps) => {
   return (
     <div
       key={l.fullName}
-      className="info"
+      className="Legislator"
     >
       <div className="photo">
         {l.imgTag}
