@@ -44,6 +44,8 @@ const CongressMap = (props: ICongressMapProps) => {
     return ref.current;
   }
 
+  const prevHoveredDistrictId = usePrevious(hoveredDistrictId);
+
   useEffect(() => {
     //@ts-ignore
     const width = mapWindowRef.current ? mapWindowRef.current.offsetWidth : 0;
@@ -51,8 +53,6 @@ const CongressMap = (props: ICongressMapProps) => {
     const height = mapWindowRef.current ? mapWindowRef.current.offsetHeight : 0
     setViewport(continentalViewport(width, height));
   }, [map]);
-
-  const prevHoveredDistrictId = usePrevious(hoveredDistrictId);
 
   useEffect(() => {
     if (map && mapFullyLoaded) {

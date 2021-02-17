@@ -42,7 +42,9 @@ const InfoBox = (props: IInfoBoxProps) => {
       );
     } else {
       return (
-        <div className="no-info">No Info</div>
+        <div className="no-info">
+          U.S. Congressional Districts
+        </div>
       );
     }
   }

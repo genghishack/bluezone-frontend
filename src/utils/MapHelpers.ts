@@ -1,9 +1,11 @@
 import geoViewport from "@mapbox/geo-viewport";
 import { continentalBbox } from '../constants';
 
+const AKBbox = [-190, 51.214183, -129, 71.365162];
+
 const getViewport = (bbox, w, h) => {
   return geoViewport.viewport(
-    continentalBbox,
+    bbox,
     [w, h], 
     0,   // minZoon
     20,  // maxZoon
